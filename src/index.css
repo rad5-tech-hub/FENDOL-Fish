@@ -1,0 +1,104 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --color-background: var(--background);
+  --color-on-background: var(--on-background);
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-secondary: var(--secondary);
+  --color-on-secondary: var(--on-secondary);
+  --color-tertiary: var(--tertiary);
+  --color-on-tertiary: var(--on-tertiary);
+  
+  --color-surface: var(--surface);
+  --color-on-surface: var(--on-surface);
+  --color-on-surface-variant: var(--on-surface-variant);
+  
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container-high: var(--surface-container-high);
+  
+  --color-outline: var(--outline);
+  --color-outline-variant: var(--outline-variant);
+
+  --animate-scroll: scroll 40s linear infinite;
+
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+}
+
+:root {
+  --background: #faf8f6;
+  --on-background: #121212;
+  --primary: #121212;
+  --on-primary: #ffffff;
+  --secondary: #d4a72c;
+  --on-secondary: #000000;
+  --tertiary: #422f10;
+  --on-tertiary: #ffffff;
+  
+  --surface: #faf8f6;
+  --on-surface: #121212;
+  --on-surface-variant: #5c544a;
+  
+  --surface-container: #f0edea;
+  --surface-container-low: #f5f2ef;
+  --surface-container-high: #eae6e1;
+  
+  --outline: #8c8273;
+  --outline-variant: #d5cfc5;
+}
+
+.dark {
+  --background: #100f0d;
+  --on-background: #e1e3e1;
+  --primary: #f4c430;
+  --on-primary: #100f0d;
+  --secondary: #ffffff;
+  --on-secondary: #100f0d;
+  --tertiary: #f4e0c1;
+  --on-tertiary: #442a00;
+  
+  --surface: #100f0d;
+  --on-surface: #e1e3e1;
+  --on-surface-variant: #cfc5b9;
+  
+  --surface-container: #1c1b18;
+  --surface-container-low: #171613;
+  --surface-container-high: #24221f;
+  
+  --outline: #9a8f81;
+  --outline-variant: #4d463c;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-on-surface font-sans;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display;
+  }
+}
+
+.paper-grain {
+  @apply fixed inset-0 pointer-events-none z-[9999] opacity-3 bg-repeat;
+  background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBeGF0gkk6tG6a_-6ZDK-OO-MxNldaWh0t-Ycn68L_pBo_lI2uuJHFNi35SgR_J1mCrhfjvD_V_P-_Ped7DAUGG4ptWhk9JEortrBLYBb1T-03UIMBuNelz92lFIoG0XtBCtfSuTQ6DEeQhJqHux1IvgxXondjS099kDdLMneRfJOyy_A2SXHc1kjo3qoxRv8b5AjNAHzsZOVuwlR6Gw3mCfPEY3MDbY3C9LxhgiNobPkR93XlyrQpjo_i33naJ4J6i-EQNM4mUf-E");
+}
+
+.smoke-overlay {
+  background: linear-gradient(to bottom, transparent, rgba(255, 249, 239, 0.4), transparent);
+  pointer-events: none;
+}
+
+.smoke-gradient {
+  background: linear-gradient(to bottom, transparent, rgba(246, 237, 216, 0.8), #f6edd8);
+}
