@@ -62,7 +62,7 @@ export default function Home() {
             </ul>
 
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
-              <Link to="/market" className="bg-secondary text-on-secondary px-10 py-4 font-sans text-sm items-center justify-center flex tracking-tight hover:bg-primary hover:text-on-primary transition-colors uppercase font-bold rounded-sm shadow-xl">
+              <Link to="/market" className="bg-secondary text-on-secondary px-10 py-4 font-sans text-sm items-center justify-center flex tracking-tight hover:opacity-90 transition-opacity uppercase font-bold rounded-sm shadow-xl">
                 Shop Fish
               </Link>
               <Link to="/distributors" className="border border-white/40 text-white px-10 py-4 font-sans text-sm items-center justify-center flex tracking-tight hover:bg-white/10 transition-colors uppercase font-bold rounded-sm">

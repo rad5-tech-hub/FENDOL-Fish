@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { MessageCircle, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { MessageCircle, X, Gift } from 'lucide-react';
 
 const PHONE = '2348052641000';
 const DEFAULT_MSG = "Hello FENDOL, I'd like to place an order.";
@@ -7,6 +8,7 @@ const DEFAULT_MSG = "Hello FENDOL, I'd like to place an order.";
 export default function WhatsAppButton() {
   const [open, setOpen] = useState(false);
   const [show, setShow] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const t = setTimeout(() => setShow(true), 1200);
@@ -41,6 +43,13 @@ export default function WhatsAppButton() {
           </a>
         </div>
       )}
+      <button
+        onClick={() => { navigate('/referral'); }}
+        aria-label="Refer & Earn"
+        className="w-14 h-14 bg-secondary text-on-secondary rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center justify-center mb-2"
+      >
+        <Gift size={22} />
+      </button>
       <button
         onClick={() => setOpen(!open)}
         aria-label="Open WhatsApp chat"

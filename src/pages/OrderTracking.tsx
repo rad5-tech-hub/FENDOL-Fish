@@ -27,7 +27,7 @@ export default function OrderTracking() {
   const timeline = MOCK_TIMELINE.default;
 
   return (
-    <main className="pb-24 px-6 md:px-16 max-w-[1440px] mx-auto overflow-hidden">
+    <main className="px-6 md:px-16 max-w-[1440px] mx-auto overflow-hidden">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-3xl">
         <span className="font-mono text-xs text-secondary mb-4 block uppercase tracking-widest font-bold">DELIVERY STATUS</span>
         <h1 className="text-4xl md:text-6xl text-primary font-display font-black uppercase tracking-tighter mb-6 leading-[0.9]">Track Your <br/>Order.</h1>

@@ -45,7 +45,7 @@ export default function Distributors() {
   ];
 
   return (
-    <main className="pb-24 overflow-hidden">
+    <main className="overflow-hidden">
       {/* Hero */}
       <section className="relative h-[60vh] min-h-[480px] flex items-center overflow-hidden">
         <div className="absolute inset-0 z-0">

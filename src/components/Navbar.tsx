@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingBag, User, Search, Menu, Sun, Moon, ChevronDown, X, ArrowRight, Truck } from 'lucide-react';
+import { ShoppingBag, User, Search, Menu, Sun, Moon, ChevronDown, X, ArrowRight, Truck, Gift, LogOut, LayoutDashboard } from 'lucide-react';
 import { useTheme } from './ThemeContext';
+import { useAuth } from '../contexts/AuthContext';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function Navbar() {
   const { darkMode, toggleDarkMode } = useTheme();
+  const { user, isAuthenticated, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -95,29 +97,50 @@ export default function Navbar() {
 
           {/* Right-aligned Navigation */}
           <nav className="hidden lg:flex gap-7 items-center ml-auto mr-6">
-            <div className="group relative py-2">
-              <Link to="/market" className={`text-sm font-medium tracking-tight transition-colors flex items-center gap-1.5 ${
-                !isScrolled && location.pathname === '/' ? 'text-white/80 hover:text-white' : 'text-on-surface-variant hover:text-primary'
-              }`}>
-                The Market <ChevronDown size={14} className="opacity-40 group-hover:rotate-180 transition-transform duration-300" />
-              </Link>
-              <div className="absolute top-full left-0 w-64 bg-surface shadow-2xl border border-primary/5 py-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] translate-y-2 group-hover:translate-y-0 rounded-lg">
-                {categories.map((cat) => (
-                  <Link 
-                    key={cat.name}
-                    to={cat.path} 
-                    className="flex justify-between items-center px-6 py-3 text-xs font-semibold tracking-tight text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors"
-                  >
-                    {cat.name}
-                    <ArrowRight size={12} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-                  </Link>
-                ))}
+            {[
+              {
+                label: 'Shop',
+                items: [
+                  { name: 'The Market', path: '/market' },
+                  { name: 'Recipes', path: '/recipes' },
+                  { name: 'Gallery', path: '/gallery' },
+                ]
+              },
+              {
+                label: 'Company',
+                items: [
+                  { name: 'About Us', path: '/about' },
+                  { name: 'Careers', path: '/careers' },
+                ]
+              },
+              {
+                label: 'Customer',
+                items: [
+                  { name: 'Track Order', path: '/track' },
+                  { name: 'Distributors', path: '/distributors' },
+                  { name: 'Contact', path: '/contact' },
+                ]
+              },
+            ].map(group => (
+              <div key={group.label} className="group relative py-2">
+                <button className={`text-sm font-medium tracking-tight transition-colors flex items-center gap-1.5 ${
+                  !isScrolled && location.pathname === '/' ? 'text-white/80 hover:text-white' : 'text-on-surface-variant hover:text-primary'
+                }`}>
+                  {group.label} <ChevronDown size={14} className="opacity-40 group-hover:rotate-180 transition-transform duration-300" />
+                </button>
+                <div className="absolute top-full left-0 min-w-48 bg-surface shadow-2xl border border-primary/5 py-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] translate-y-2 group-hover:translate-y-0 rounded-lg">
+                  {group.items.map((item) => (
+                    <Link 
+                      key={item.name}
+                      to={item.path} 
+                      className="flex justify-between items-center px-6 py-3 text-xs font-semibold tracking-tight text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors whitespace-nowrap"
+                    >
+                      {item.name}
+                      <ArrowRight size={12} className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+                    </Link>
+                  ))}
+                </div>
               </div>
-            </div>
-            {navLinks.filter(l => !['Home', 'The Market', 'Recipes', 'Gallery', 'Track Order'].includes(l.name)).map(link => (
-              <Link key={link.name} to={link.path} className={`text-sm font-medium tracking-tight transition-colors ${
-                !isScrolled && location.pathname === '/' ? 'text-white/80 hover:text-white' : 'text-on-surface-variant hover:text-primary'
-              }`}>{link.name}</Link>
             ))}
           </nav>
           
@@ -138,8 +161,7 @@ export default function Navbar() {
                 }
               </button>
             </div>
-            
-            <Link to="/market" className="hidden md:inline-flex items-center px-5 py-2.5 bg-secondary text-on-secondary text-[11px] font-black uppercase tracking-widest rounded-sm hover:bg-primary hover:text-on-primary transition-all shadow-md">
+            <Link to="/market" className="hidden md:inline-flex items-center px-5 py-2.5 bg-secondary text-on-secondary text-[11px] font-black uppercase tracking-widest rounded-sm hover:opacity-90 transition-opacity shadow-md">
               Order Now
             </Link>
 
@@ -258,6 +280,10 @@ export default function Navbar() {
                     { name: 'About Us', path: '/about' },
                     { name: 'Careers', path: '/careers' },
                   ]},
+                  { label: 'Referral', items: [
+                    { name: 'Refer & Earn', path: '/referral' },
+                    ...(isAuthenticated ? [{ name: 'My Dashboard', path: '/dashboard' as string }] : []),
+                  ]},
                   { label: 'Customer', items: [
                     { name: 'Track Order', path: '/track' },
                     { name: 'Distributors', path: '/distributors' },
@@ -310,9 +336,20 @@ export default function Navbar() {
                     {darkMode ? <Sun size={18} /> : <Moon size={18} />}
                     <span>{darkMode ? 'Light' : 'Dark'} Mode</span>
                   </button>
-                  <Link to="/admin" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest opacity-80 hover:opacity-100 transition-opacity">
-                    <User size={18} /> My Account
-                  </Link>
+                  {isAuthenticated ? (
+                    <div className="flex items-center gap-4">
+                      <Link to="/dashboard" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest opacity-80 hover:opacity-100 transition-opacity">
+                        <LayoutDashboard size={18} /> Dashboard
+                      </Link>
+                      <button onClick={() => { logout(); setIsMenuOpen(false); }} className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest opacity-80 hover:opacity-100 transition-opacity">
+                        <LogOut size={18} /> Sign Out
+                      </button>
+                    </div>
+                  ) : (
+                    <Link to="/login" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest opacity-80 hover:opacity-100 transition-opacity">
+                      <User size={18} /> Sign In
+                    </Link>
+                  )}
                 </div>
                 <button 
                   onClick={() => {
@@ -330,7 +367,7 @@ export default function Navbar() {
       </header>
       
       {/* Spacer to prevent content jump - but only if header is sticky and not transparent */}
-      <div className={`h-24 md:h-32 transition-all ${location.pathname === '/' ? 'hidden' : 'block'}`}></div>
+      <div className={`h-24 md:h-32 transition-all ${location.pathname === '/' || location.pathname === '/referral' ? 'hidden' : 'block'}`}></div>
     </>
   );
 }

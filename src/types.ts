@@ -22,3 +22,21 @@ export interface User {
   email: string;
   role: 'user' | 'admin';
 }
+
+export interface Agent {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  role: 'agent';
+  referralCode: string;
+  referralLink: string;
+  earnings: number;
+  totalReferrals: number;
+  createdAt: string;
+}
+
+export interface AuthState {
+  user: Agent | null;
+  isAuthenticated: boolean;
+}

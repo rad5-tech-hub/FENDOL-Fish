@@ -22,7 +22,7 @@ export default function Gallery() {
     : GALLERY_IMAGES.filter(img => img.category === activeCategory);
 
   return (
-    <main className="pb-24 px-6 md:px-16 max-w-[1440px] mx-auto overflow-hidden">
+    <main className="px-6 md:px-16 max-w-[1440px] mx-auto overflow-hidden">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

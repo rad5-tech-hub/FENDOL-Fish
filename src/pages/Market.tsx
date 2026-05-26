@@ -25,7 +25,7 @@ export default function Market() {
   });
 
   return (
-    <main className="pb-24 max-w-[1440px] mx-auto px-6 md:px-16 transition-colors">
+    <main className="max-w-[1440px] mx-auto px-6 md:px-16 transition-colors">
       <section className="mb-16">
         <h1 className="text-3xl md:text-5xl mb-6 uppercase font-extrabold tracking-tighter">
           {searchBarQuery ? `Search: ${searchBarQuery}` : 'The Fresh Inventory'}

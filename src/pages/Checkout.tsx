@@ -25,7 +25,7 @@ export default function Checkout() {
   const total = subtotal + delivery + fee;
 
   return (
-    <main className="pt-28 pb-24 bg-surface-container/50 min-h-screen transition-colors">
+    <main className="pt-28 bg-surface-container/50 min-h-screen transition-colors">
       <div className="max-w-[1440px] mx-auto px-6 md:px-16">
         <Link to="/market" className="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors mb-10 group">
           <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
