@@ -5,7 +5,7 @@ import { motion } from 'motion/react';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Login() {
-  const { login, isAuthenticated } = useAuth();
+  const { login, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({ email: '', password: '' });
@@ -16,7 +16,7 @@ export default function Login() {
     if (isAuthenticated) navigate('/dashboard', { replace: true });
   }, [isAuthenticated, navigate]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -25,7 +25,7 @@ export default function Login() {
       return;
     }
 
-    const result = login(form.email.trim().toLowerCase(), form.password);
+    const result = await login(form.email.trim().toLowerCase(), form.password);
     if (result.success) {
       navigate('/dashboard');
     } else {
@@ -85,9 +85,10 @@ export default function Login() {
 
                 <button
                   type="submit"
-                  className="w-full bg-secondary text-on-secondary py-4 text-xs font-black uppercase tracking-widest hover:opacity-90 transition-all shadow-lg mt-2 flex items-center justify-center gap-2"
+                  disabled={isLoading}
+                  className="w-full bg-secondary text-on-secondary py-4 text-xs font-black uppercase tracking-widest hover:opacity-90 transition-all shadow-lg mt-2 flex items-center justify-center gap-2 disabled:opacity-50"
                 >
-                  Sign In <ChevronRight size={16} />
+                  {isLoading ? 'Signing In...' : 'Sign In'} {!isLoading && <ChevronRight size={16} />}
                 </button>
               </form>
 

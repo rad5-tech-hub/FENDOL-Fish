@@ -36,7 +36,56 @@ export interface Agent {
   createdAt: string;
 }
 
+export interface Customer {
+  id: string;
+  fullName: string;
+  email: string;
+  emailVerified: boolean;
+  accessToken: string;
+  expiresIn: string;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  response_message: string;
+  data?: T;
+  error?: {
+    name: string;
+    message: string;
+    statusCode: number;
+  };
+}
+
+export interface SignupPayload {
+  fullName: string;
+  email: string;
+  password: string;
+  address: string;
+  phone?: string;
+  category?: string;
+}
+
+export interface VerifyOtpPayload {
+  email: string;
+  otp: string;
+}
+
+export interface LoginPayload {
+  email: string;
+  password: string;
+}
+
+export interface AuthData {
+  id: string;
+  fullName: string;
+  email: string;
+  emailVerified: boolean;
+  accessToken: string;
+  expiresIn: string;
+}
+
 export interface AuthState {
   user: Agent | null;
+  customer: Customer | null;
   isAuthenticated: boolean;
 }

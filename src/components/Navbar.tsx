@@ -7,7 +7,8 @@ import { motion, AnimatePresence } from 'motion/react';
 
 export default function Navbar() {
   const { darkMode, toggleDarkMode } = useTheme();
-  const { user, isAuthenticated, logout } = useAuth();
+  const { customer, user, isAuthenticated, logout } = useAuth();
+  const displayName = customer?.fullName || user?.name || '';
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -15,7 +16,6 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Handle scroll position for stylistic changes
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -24,7 +24,6 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Prevent scroll when search or menu is open
   useEffect(() => {
     if (isSearchOpen || isMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -46,6 +45,12 @@ export default function Navbar() {
       setIsSearchOpen(false);
       setSearchQuery('');
     }
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    setIsMenuOpen(false);
+    navigate('/');
   };
 
   const navLinks = [
@@ -161,8 +166,8 @@ export default function Navbar() {
                 }
               </button>
             </div>
-            <Link to="/market" className="hidden md:inline-flex items-center px-5 py-2.5 bg-secondary text-on-secondary text-[11px] font-black uppercase tracking-widest rounded-sm hover:opacity-90 transition-opacity shadow-md">
-              Order Now
+            <Link to={location.pathname === '/' ? '/market' : '/login'} className="hidden md:inline-flex items-center px-5 py-2.5 bg-secondary text-on-secondary text-[11px] font-black uppercase tracking-widest rounded-sm hover:opacity-90 transition-opacity shadow-md">
+              {location.pathname === '/' ? 'Order Now' : 'Sign In'}
             </Link>
 
             <button onClick={toggleMenu} className="lg:hidden p-2 hover:bg-surface-container rounded-full transition-colors ml-1">
@@ -341,7 +346,7 @@ export default function Navbar() {
                       <Link to="/dashboard" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest opacity-80 hover:opacity-100 transition-opacity">
                         <LayoutDashboard size={18} /> Dashboard
                       </Link>
-                      <button onClick={() => { logout(); setIsMenuOpen(false); }} className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest opacity-80 hover:opacity-100 transition-opacity">
+                      <button onClick={handleLogout} className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest opacity-80 hover:opacity-100 transition-opacity">
                         <LogOut size={18} /> Sign Out
                       </button>
                     </div>
@@ -366,7 +371,7 @@ export default function Navbar() {
         </AnimatePresence>
       </header>
       
-      {/* Spacer to prevent content jump - but only if header is sticky and not transparent */}
+      {/* Spacer to prevent content jump */}
       <div className={`h-24 md:h-32 transition-all ${location.pathname === '/' || location.pathname === '/referral' ? 'hidden' : 'block'}`}></div>
     </>
   );

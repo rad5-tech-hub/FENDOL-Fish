@@ -1,32 +1,44 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { Eye, EyeOff, User, Mail, Phone, Lock, Gift, ChevronRight, CheckCircle, AlertCircle } from 'lucide-react';
+import { Eye, EyeOff, User, Mail, Phone, Lock, Gift, ChevronRight, CheckCircle, AlertCircle, MapPin, ArrowLeft, KeyRound } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Signup() {
-  const { signup, isAuthenticated } = useAuth();
+  const { signup, verifyOtp, isAuthenticated, isLoading, isOtpSent, otpEmail, resetOtpState } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', confirmPassword: '' });
+  const [form, setForm] = useState({ fullName: '', email: '', phone: '', password: '', confirmPassword: '', address: '' });
   const [referralCode, setReferralCode] = useState(searchParams.get('ref') || '');
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [serverError, setServerError] = useState('');
-  const [success, setSuccess] = useState(false);
+
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [otpError, setOtpError] = useState('');
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [resendTimer, setResendTimer] = useState(0);
 
   useEffect(() => {
     if (isAuthenticated) navigate('/dashboard', { replace: true });
   }, [isAuthenticated, navigate]);
 
+  useEffect(() => {
+    if (resendTimer > 0) {
+      const t = setTimeout(() => setResendTimer(t => t - 1), 1000);
+      return () => clearTimeout(t);
+    }
+  }, [resendTimer]);
+
   const validate = () => {
     const errs: Record<string, string> = {};
-    if (!form.name.trim()) errs.name = 'Full name is required';
+    if (!form.fullName.trim()) errs.fullName = 'Full name is required';
     if (!form.email.trim()) errs.email = 'Email is required';
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = 'Invalid email address';
     if (!form.phone.trim()) errs.phone = 'Phone number is required';
     else if (!/^\+?[\d\s-]{7,15}$/.test(form.phone)) errs.phone = 'Invalid phone number';
+    if (!form.address.trim()) errs.address = 'Address is required';
     if (!form.password) errs.password = 'Password is required';
     else if (form.password.length < 6) errs.password = 'Password must be at least 6 characters';
     if (form.password !== form.confirmPassword) errs.confirmPassword = 'Passwords do not match';
@@ -34,24 +46,77 @@ export default function Signup() {
     return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setServerError('');
     if (!validate()) return;
 
-    const result = signup({
-      name: form.name.trim(),
+    const result = await signup({
+      fullName: form.fullName.trim(),
       email: form.email.trim().toLowerCase(),
       phone: form.phone.trim(),
       password: form.password,
-      referralCode: referralCode.trim() || undefined,
+      address: form.address.trim(),
     });
 
-    if (result.success) {
-      setSuccess(true);
-      setTimeout(() => navigate('/dashboard'), 1200);
-    } else {
+    if (!result.success) {
       setServerError(result.error || 'Signup failed. Please try again.');
+    }
+  };
+
+  const handleOtpChange = (index: number, value: string) => {
+    if (!/^\d*$/.test(value)) return;
+    const newOtp = [...otp];
+    newOtp[index] = value.slice(-1);
+    setOtp(newOtp);
+    setOtpError('');
+
+    if (value && index < 5) {
+      otpRefs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+      otpRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handleOtpSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setOtpError('');
+    const code = otp.join('');
+    if (code.length !== 6) {
+      setOtpError('Please enter the complete 6-digit code.');
+      return;
+    }
+
+    const result = await verifyOtp(otpEmail!, code);
+    if (result.success) {
+      navigate('/dashboard', { replace: true });
+    } else {
+      setOtpError(result.error || 'Verification failed.');
+      setOtp(['', '', '', '', '', '']);
+      otpRefs.current[0]?.focus();
+    }
+  };
+
+  const handleResend = async () => {
+    if (resendTimer > 0) return;
+    setServerError('');
+    const result = await signup({
+      fullName: form.fullName.trim(),
+      email: form.email.trim().toLowerCase(),
+      phone: form.phone.trim(),
+      password: form.password,
+      address: form.address.trim(),
+    });
+    if (result.success) {
+      setResendTimer(60);
+      setOtp(['', '', '', '', '', '']);
+      otpRefs.current[0]?.focus();
+    } else {
+      setServerError(result.error || 'Failed to resend code.');
     }
   };
 
@@ -64,14 +129,86 @@ export default function Signup() {
     });
   };
 
-  if (success) {
+  if (isOtpSent && otpEmail) {
     return (
-      <main className="pt-24 min-h-screen flex items-center justify-center bg-surface-container-low transition-colors">
-        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center max-w-md px-6">
-          <CheckCircle size={64} className="text-secondary mx-auto mb-6" />
-          <h1 className="text-3xl font-display font-black uppercase tracking-tight mb-4">Account Created!</h1>
-          <p className="text-on-surface-variant mb-8">Redirecting you to your dashboard...</p>
-        </motion.div>
+      <main className="pt-24 min-h-screen bg-surface-container-low transition-colors">
+        <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-12 md:py-20">
+          <div className="max-w-md mx-auto">
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+              <button
+                onClick={() => { resetOtpState(); setOtp(['', '', '', '', '', '']); }}
+                className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-on-surface-variant hover:text-secondary mb-8 transition-colors"
+              >
+                <ArrowLeft size={14} /> Back
+              </button>
+
+              <div className="text-center mb-10">
+                <div className="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <KeyRound size={28} className="text-secondary" />
+                </div>
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-secondary font-black">Verify Your Email</span>
+                <h1 className="text-3xl md:text-4xl font-display font-black uppercase tracking-tight mt-3 mb-3">Check Your Inbox</h1>
+                <p className="text-on-surface-variant text-sm">
+                  We sent a 6-digit code to <strong className="text-primary">{otpEmail}</strong>
+                </p>
+              </div>
+
+              <div className="bg-surface border border-primary/5 p-8 md:p-10">
+                {serverError && (
+                  <div className="flex items-center gap-3 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800/30 px-4 py-3 mb-6 rounded-sm">
+                    <AlertCircle size={16} className="text-red-500 shrink-0" />
+                    <p className="text-xs text-red-600 dark:text-red-400">{serverError}</p>
+                  </div>
+                )}
+
+                <form onSubmit={handleOtpSubmit}>
+                  <div className="mb-8">
+                    <label className="font-mono text-[10px] uppercase tracking-widest text-on-surface-variant font-black mb-4 block text-center">
+                      Enter Verification Code
+                    </label>
+                    <div className="flex gap-3 justify-center">
+                      {otp.map((digit, i) => (
+                        <input
+                          key={i}
+                          ref={el => { otpRefs.current[i] = el; }}
+                          type="text"
+                          inputMode="numeric"
+                          maxLength={1}
+                          value={digit}
+                          onChange={e => handleOtpChange(i, e.target.value)}
+                          onKeyDown={e => handleOtpKeyDown(i, e)}
+                          className={`w-12 h-14 text-center text-xl font-bold bg-surface-container-low border ${otpError ? 'border-red-400' : 'border-primary/10'} outline-none focus:border-secondary transition-colors`}
+                        />
+                      ))}
+                    </div>
+                    {otpError && <p className="text-red-500 text-xs mt-3 text-center">{otpError}</p>}
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full bg-secondary text-on-secondary py-4 text-xs font-black uppercase tracking-widest hover:opacity-90 transition-all shadow-lg mt-2 flex items-center justify-center gap-2 disabled:opacity-50"
+                  >
+                    {isLoading ? 'Verifying...' : 'Verify Email'} {!isLoading && <ChevronRight size={16} />}
+                  </button>
+                </form>
+
+                <div className="mt-6 text-center">
+                  <p className="text-xs text-on-surface-variant">
+                    Didn't receive the code?{' '}
+                    <button
+                      onClick={handleResend}
+                      disabled={resendTimer > 0 || isLoading}
+                      className="text-secondary font-bold hover:underline disabled:opacity-40 disabled:no-underline"
+                    >
+                      {resendTimer > 0 ? `Resend in ${resendTimer}s` : 'Resend Code'}
+                    </button>
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
       </main>
     );
   }
@@ -84,7 +221,7 @@ export default function Signup() {
             <div className="text-center mb-10">
               <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-secondary font-black">Get Started</span>
               <h1 className="text-3xl md:text-4xl font-display font-black uppercase tracking-tight mt-3 mb-3">Create Account</h1>
-              <p className="text-on-surface-variant text-sm">Join the FENDOL Agent Program and start earning.</p>
+              <p className="text-on-surface-variant text-sm">Join FENDOL and start shopping premium fish.</p>
             </div>
 
             <div className="bg-surface border border-primary/5 p-8 md:p-10">
@@ -111,13 +248,13 @@ export default function Signup() {
                     <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/40" />
                     <input
                       type="text"
-                      value={form.name}
-                      onChange={e => updateField('name', e.target.value)}
+                      value={form.fullName}
+                      onChange={e => updateField('fullName', e.target.value)}
                       placeholder="Chidera Okonkwo"
-                      className={`w-full bg-surface-container-low border ${errors.name ? 'border-red-400' : 'border-primary/10'} py-3.5 pl-11 pr-4 text-sm outline-none focus:border-secondary transition-colors`}
+                      className={`w-full bg-surface-container-low border ${errors.fullName ? 'border-red-400' : 'border-primary/10'} py-3.5 pl-11 pr-4 text-sm outline-none focus:border-secondary transition-colors`}
                     />
                   </div>
-                  {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                  {errors.fullName && <p className="text-red-500 text-xs mt-1">{errors.fullName}</p>}
                 </div>
 
                 <div>
@@ -148,6 +285,22 @@ export default function Signup() {
                     />
                   </div>
                   {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
+                  <p className="text-[10px] text-on-surface-variant/50 mt-1">Include country code, e.g. +2348012345678</p>
+                </div>
+
+                <div>
+                  <label className="font-mono text-[10px] uppercase tracking-widest text-on-surface-variant font-black mb-2 block">Delivery Address</label>
+                  <div className="relative">
+                    <MapPin size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/40" />
+                    <input
+                      type="text"
+                      value={form.address}
+                      onChange={e => updateField('address', e.target.value)}
+                      placeholder="12 Marina, Lagos"
+                      className={`w-full bg-surface-container-low border ${errors.address ? 'border-red-400' : 'border-primary/10'} py-3.5 pl-11 pr-4 text-sm outline-none focus:border-secondary transition-colors`}
+                    />
+                  </div>
+                  {errors.address && <p className="text-red-500 text-xs mt-1">{errors.address}</p>}
                 </div>
 
                 <div>
@@ -201,9 +354,10 @@ export default function Signup() {
 
                 <button
                   type="submit"
-                  className="w-full bg-secondary text-on-secondary py-4 text-xs font-black uppercase tracking-widest hover:opacity-90 transition-all shadow-lg mt-2 flex items-center justify-center gap-2"
+                  disabled={isLoading}
+                  className="w-full bg-secondary text-on-secondary py-4 text-xs font-black uppercase tracking-widest hover:opacity-90 transition-all shadow-lg mt-2 flex items-center justify-center gap-2 disabled:opacity-50"
                 >
-                  Create Account <ChevronRight size={16} />
+                  {isLoading ? 'Sending Code...' : 'Create Account'} {!isLoading && <ChevronRight size={16} />}
                 </button>
               </form>
 

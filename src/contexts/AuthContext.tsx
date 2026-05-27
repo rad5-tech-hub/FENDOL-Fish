@@ -1,36 +1,45 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import type { Agent } from '../types';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import type { Customer, Agent } from '../types';
+import { setAccessToken, getAccessToken, ApiError } from '../lib/api';
+import {
+  requestSignupOtp,
+  verifySignupOtp,
+  loginCustomer,
+  logoutCustomer,
+} from '../api/customer';
 
 interface AuthContextType {
+  customer: Customer | null;
   user: Agent | null;
   isAuthenticated: boolean;
-  signup: (data: { name: string; email: string; phone: string; password: string; referralCode?: string }) => { success: boolean; error?: string };
-  login: (email: string, password: string) => { success: boolean; error?: string };
-  logout: () => void;
+  isLoading: boolean;
+  signup: (data: {
+    fullName: string;
+    email: string;
+    phone: string;
+    password: string;
+    address: string;
+  }) => Promise<{ success: boolean; error?: string }>;
+  verifyOtp: (email: string, otp: string) => Promise<{ success: boolean; error?: string }>;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  logout: () => Promise<void>;
   getReferralLink: () => string;
+  isOtpSent: boolean;
+  otpEmail: string | null;
+  resetOtpState: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-function generateId(): string {
-  return 'AG-' + Math.random().toString(36).substring(2, 8).toUpperCase();
-}
-
-function generateReferralCode(name: string): string {
-  const prefix = name.substring(0, 3).toUpperCase();
-  const suffix = Math.random().toString(36).substring(2, 6).toUpperCase();
-  return `${prefix}-${suffix}`;
-}
-
-function getStoredUsers(): Record<string, { agent: Agent; password: string }> {
-  try {
-    return JSON.parse(localStorage.getItem('fendol_users') || '{}');
-  } catch {
-    return {};
-  }
-}
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [customer, setCustomer] = useState<Customer | null>(() => {
+    try {
+      const saved = localStorage.getItem('fendol_customer');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
   const [user, setUser] = useState<Agent | null>(() => {
     try {
       const saved = localStorage.getItem('fendol_current_user');
@@ -39,6 +48,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return null;
     }
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [isOtpSent, setIsOtpSent] = useState(false);
+  const [otpEmail, setOtpEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (customer) {
+      localStorage.setItem('fendol_customer', JSON.stringify(customer));
+    } else {
+      localStorage.removeItem('fendol_customer');
+    }
+  }, [customer]);
 
   useEffect(() => {
     if (user) {
@@ -48,55 +68,98 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [user]);
 
-  const signup = useCallback((data: { name: string; email: string; phone: string; password: string; referralCode?: string }) => {
-    const users = getStoredUsers();
-
-    if (users[data.email]) {
-      return { success: false, error: 'An account with this email already exists.' };
+  const signup = useCallback(async (data: {
+    fullName: string;
+    email: string;
+    phone: string;
+    password: string;
+    address: string;
+  }) => {
+    setIsLoading(true);
+    try {
+      await requestSignupOtp({
+        fullName: data.fullName,
+        email: data.email.toLowerCase(),
+        phone: data.phone,
+        password: data.password,
+        address: data.address,
+      });
+      setIsOtpSent(true);
+      setOtpEmail(data.email.toLowerCase());
+      return { success: true };
+    } catch (err) {
+      const message = err instanceof ApiError ? err.message : 'Signup failed. Please try again.';
+      return { success: false, error: message };
+    } finally {
+      setIsLoading(false);
     }
-
-    const id = generateId();
-    const code = generateReferralCode(data.name);
-    const link = `${window.location.origin}/signup?ref=${code}`;
-
-    const agent: Agent = {
-      id,
-      name: data.name,
-      email: data.email,
-      phone: data.phone,
-      role: 'agent',
-      referralCode: code,
-      referralLink: link,
-      earnings: 0,
-      totalReferrals: 0,
-      createdAt: new Date().toISOString(),
-    };
-
-    users[data.email] = { agent, password: data.password };
-    localStorage.setItem('fendol_users', JSON.stringify(users));
-    setUser(agent);
-
-    return { success: true };
   }, []);
 
-  const login = useCallback((email: string, password: string) => {
-    const users = getStoredUsers();
-    const record = users[email];
-
-    if (!record) {
-      return { success: false, error: 'No account found with this email.' };
+  const verifyOtp = useCallback(async (email: string, otp: string) => {
+    setIsLoading(true);
+    try {
+      const response = await verifySignupOtp({ email: email.toLowerCase(), otp });
+      if (response.data) {
+        setAccessToken(response.data.accessToken);
+        setCustomer({
+          id: response.data.id,
+          fullName: response.data.fullName,
+          email: response.data.email,
+          emailVerified: response.data.emailVerified,
+          accessToken: response.data.accessToken,
+          expiresIn: response.data.expiresIn,
+        });
+        setIsOtpSent(false);
+        setOtpEmail(null);
+      }
+      return { success: true };
+    } catch (err) {
+      const message = err instanceof ApiError ? err.message : 'OTP verification failed.';
+      return { success: false, error: message };
+    } finally {
+      setIsLoading(false);
     }
-
-    if (record.password !== password) {
-      return { success: false, error: 'Incorrect password.' };
-    }
-
-    setUser(record.agent);
-    return { success: true };
   }, []);
 
-  const logout = useCallback(() => {
-    setUser(null);
+  const login = useCallback(async (email: string, password: string) => {
+    setIsLoading(true);
+    try {
+      const response = await loginCustomer({ email: email.toLowerCase(), password });
+      if (response.data) {
+        setAccessToken(response.data.accessToken);
+        setCustomer({
+          id: response.data.id,
+          fullName: response.data.fullName,
+          email: response.data.email,
+          emailVerified: response.data.emailVerified,
+          accessToken: response.data.accessToken,
+          expiresIn: response.data.expiresIn,
+        });
+      }
+      return { success: true };
+    } catch (err) {
+      const message = err instanceof ApiError ? err.message : 'Login failed.';
+      return { success: false, error: message };
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const logout = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const token = getAccessToken();
+      await logoutCustomer(token ?? undefined);
+    } catch {
+      /* proceed with client-side cleanup */
+    } finally {
+      setAccessToken(null);
+      setCustomer(null);
+      setUser(null);
+      setIsOtpSent(false);
+      setOtpEmail(null);
+      setIsLoading(false);
+    }
   }, []);
 
   const getReferralLink = useCallback(() => {
@@ -104,8 +167,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return user.referralLink;
   }, [user]);
 
+  const resetOtpState = useCallback(() => {
+    setIsOtpSent(false);
+    setOtpEmail(null);
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated: !!user, signup, login, logout, getReferralLink }}>
+    <AuthContext.Provider
+      value={{
+        customer,
+        user,
+        isAuthenticated: !!customer || !!user,
+        isLoading,
+        signup,
+        verifyOtp,
+        login,
+        logout,
+        getReferralLink,
+        isOtpSent,
+        otpEmail,
+        resetOtpState,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

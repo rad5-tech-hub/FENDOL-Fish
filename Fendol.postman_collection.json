@@ -1,0 +1,1644 @@
+{
+  "info": {
+    "_postman_id": "c19e713a-e0dc-4741-bbad-1e52ebcc9865",
+    "name": "Fendol",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "54990352",
+    "_collection_link": "https://go.postman.co/collection/54990352-c19e713a-e0dc-4741-bbad-1e52ebcc9865?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "site",
+      "item": [
+        {
+          "name": "create",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\":\"okay\",\n    \"location\":\"jos\",\n    \"description\":\"a very big name\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Localhost}}/v2/create-site",
+              "host": [
+                "{{Localhost}}"
+              ],
+              "path": [
+                "v2",
+                "create-site"
+              ]
+            },
+            "description": "Name is the only compulsory field"
+          },
+          "response": [
+            {
+              "name": "201 okay",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\":\"okay\",\n    \"location\":\"jos\",\n    \"description\":\"a very big name\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{Localhost}}/v2/create-site",
+                  "host": [
+                    "{{Localhost}}"
+                  ],
+                  "path": [
+                    "v2",
+                    "create-site"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "359"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"167-Rcj9chlHCzSPBNjRWXwtiBnZ5ko\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 20 May 2026 12:08:52 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"response_message\": \"Site created successfully\",\n    \"data\": {\n        \"id\": \"afe9a8ca-d693-41c6-8ae1-a30965b42688\",\n        \"name\": \"okay\",\n        \"location\": \"jos\",\n        \"description\": \"a very big name\",\n        \"createdBy\": \"a7419700-7fbf-4ab9-b3dd-a97fde80944c\",\n        \"updatedBy\": \"a7419700-7fbf-4ab9-b3dd-a97fde80944c\",\n        \"updatedAt\": \"2026-05-20T12:08:52.168Z\",\n        \"createdAt\": \"2026-05-20T12:08:52.168Z\"\n    }\n}"
+            },
+            {
+              "name": "duplicate name",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\":\"okay\",\n    \"location\":\"jos\",\n    \"description\":\"a very big name\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{Localhost}}/v2/create-site",
+                  "host": [
+                    "{{Localhost}}"
+                  ],
+                  "path": [
+                    "v2",
+                    "create-site"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "162"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"a2-E5e72LoQf9owZnCBAyPK5XkVQXM\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 20 May 2026 12:15:05 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": false,\n    \"response_message\": \"Site with this name already exists\",\n    \"error\": {\n        \"name\": \"Error\",\n        \"message\": \"Site with this name already exists\",\n        \"statusCode\": 400\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "all site",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{Localhost}}/v2/all-site",
+              "host": [
+                "{{Localhost}}"
+              ],
+              "path": [
+                "v2",
+                "all-site"
+              ]
+            },
+            "description": "only super admins can."
+          },
+          "response": [
+            {
+              "name": "200 okay",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{Localhost}}/v2/all-site",
+                  "host": [
+                    "{{Localhost}}"
+                  ],
+                  "path": [
+                    "v2",
+                    "all-site"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "381"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"17d-7ml1mNtBO679zur939lcvBJY29A\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 20 May 2026 12:16:38 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"response_message\": \"Sites retrieved successfully\",\n    \"data\": [\n        {\n            \"id\": \"afe9a8ca-d693-41c6-8ae1-a30965b42688\",\n            \"name\": \"okay\",\n            \"location\": \"jos\",\n            \"description\": \"a very big name\",\n            \"createdBy\": \"a7419700-7fbf-4ab9-b3dd-a97fde80944c\",\n            \"updatedBy\": \"a7419700-7fbf-4ab9-b3dd-a97fde80944c\",\n            \"deletedAt\": null,\n            \"createdAt\": \"2026-05-20T12:08:52.000Z\",\n            \"updatedAt\": \"2026-05-20T12:08:52.000Z\"\n        }\n    ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "a site",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{Localhost}}/v2/site/",
+              "host": [
+                "{{Localhost}}"
+              ],
+              "path": [
+                "v2",
+                "site",
+                ""
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "200 oay",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{Localhost}}/v2/site/afe9a8ca-d693-41c6-8ae1-a30965b42688",
+                  "host": [
+                    "{{Localhost}}"
+                  ],
+                  "path": [
+                    "v2",
+                    "site",
+                    "afe9a8ca-d693-41c6-8ae1-a30965b42688"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "235"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"eb-LjUHdkEslxXDxqeW3A2MZ+zYd0w\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 20 May 2026 12:55:03 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"response_message\": \"Site retrieved successfully\",\n    \"data\": {\n        \"id\": \"afe9a8ca-d693-41c6-8ae1-a30965b42688\",\n        \"name\": \"okay\",\n        \"location\": \"jos\",\n        \"description\": \"a very big name\",\n        \"createdAt\": \"2026-05-20T12:08:52.000Z\",\n        \"userSites\": []\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "update-site",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\":\"bnuutu\"\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{Localhost}}/v2/update-site/afe9a8ca-d693-41c6-8ae1-a30965b42688",
+              "host": [
+                "{{Localhost}}"
+              ],
+              "path": [
+                "v2",
+                "update-site",
+                "afe9a8ca-d693-41c6-8ae1-a30965b42688"
+              ]
+            },
+            "description": "All fields are optional"
+          },
+          "response": [
+            {
+              "name": "200 okay",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "    {\n    \"name\":\"bumerrr\",\n    \"location\":\"jos\",\n    \"description\":\"a very big name\"\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{Localhost}}/v2/update-site/afe9a8ca-d693-41c6-8ae1-a30965b42688",
+                  "host": [
+                    "{{Localhost}}"
+                  ],
+                  "path": [
+                    "v2",
+                    "update-site",
+                    "afe9a8ca-d693-41c6-8ae1-a30965b42688"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "379"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"17b-+/D7KsSexbipsib4Dz6Rn7L4LfQ\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 20 May 2026 13:09:28 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"response_message\": \"Site updated successfully\",\n    \"data\": {\n        \"id\": \"afe9a8ca-d693-41c6-8ae1-a30965b42688\",\n        \"name\": \"bumerrr\",\n        \"location\": \"jos\",\n        \"description\": \"a very big name\",\n        \"createdBy\": \"a7419700-7fbf-4ab9-b3dd-a97fde80944c\",\n        \"updatedBy\": \"a7419700-7fbf-4ab9-b3dd-a97fde80944c\",\n        \"deletedAt\": null,\n        \"createdAt\": \"2026-05-20T12:08:52.000Z\",\n        \"updatedAt\": \"2026-05-20T13:09:28.448Z\"\n    }\n}"
+            },
+            {
+              "name": "a field",
+              "originalRequest": {
+                "method": "PATCH",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"name\":\"bnuutu\"\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{Localhost}}/v2/update-site/afe9a8ca-d693-41c6-8ae1-a30965b42688",
+                  "host": [
+                    "{{Localhost}}"
+                  ],
+                  "path": [
+                    "v2",
+                    "update-site",
+                    "afe9a8ca-d693-41c6-8ae1-a30965b42688"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "378"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"17a-20WIEzcy/d1QbKUAZ6PCgjpoZWc\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 20 May 2026 13:10:14 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"response_message\": \"Site updated successfully\",\n    \"data\": {\n        \"id\": \"afe9a8ca-d693-41c6-8ae1-a30965b42688\",\n        \"name\": \"bnuutu\",\n        \"location\": \"jos\",\n        \"description\": \"a very big name\",\n        \"createdBy\": \"a7419700-7fbf-4ab9-b3dd-a97fde80944c\",\n        \"updatedBy\": \"a7419700-7fbf-4ab9-b3dd-a97fde80944c\",\n        \"deletedAt\": null,\n        \"createdAt\": \"2026-05-20T12:08:52.000Z\",\n        \"updatedAt\": \"2026-05-20T13:10:14.203Z\"\n    }\n}"
+            }
+          ]
+        },
+        {
+          "name": "delete site",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": [
+            {
+              "name": "200 ok",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{Localhost}}/v2/site/afe9a8ca-d693-41c6-8ae1-a30965b42688",
+                  "host": [
+                    "{{Localhost}}"
+                  ],
+                  "path": [
+                    "v2",
+                    "site",
+                    "afe9a8ca-d693-41c6-8ae1-a30965b42688"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": null,
+              "header": [
+                {
+                  "key": "X-Powered-By",
+                  "value": "Express"
+                },
+                {
+                  "key": "Access-Control-Allow-Origin",
+                  "value": "*"
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "Content-Length",
+                  "value": "63"
+                },
+                {
+                  "key": "ETag",
+                  "value": "W/\"3f-OyjAZy07ZwNYLRQ/qs5R7McmK4Q\""
+                },
+                {
+                  "key": "Date",
+                  "value": "Wed, 20 May 2026 13:42:59 GMT"
+                },
+                {
+                  "key": "Connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "Keep-Alive",
+                  "value": "timeout=5"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n    \"success\": true,\n    \"response_message\": \"Site deleted successfully\"\n}"
+            }
+          ]
+        }
+      ],
+      "auth": {
+        "type": "bearer",
+        "bearer": [
+          {
+            "key": "token",
+            "value": "{{vault:admin fendol}}",
+            "type": "string"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "login",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "website",
+      "item": [
+        {
+          "name": "Customer",
+          "item": [
+            {
+              "name": "create account",
+              "item": [
+                {
+                  "name": "create customer acct",
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"fullName\": \"Jane Doe\",\n  \"phone\": \"+2348012345674\",\n  \"email\": \"baby@example.com\",\n  \"password\": \"Password123\",\n  //\"category\": \"Retail\",\n  \"address\": \"12 Marina, Lagos\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{Localhost}}/v2/customers/public",
+                      "host": [
+                        "{{Localhost}}"
+                      ],
+                      "path": [
+                        "v2",
+                        "customers",
+                        "public"
+                      ]
+                    },
+                    "description": "\\- \\`fullName\\`: required, string, min 2, max 100\n\n\\- \\`phone\\`: optional, string- \\`email\\`: required, valid email\n\n\\- \\`category\\`: optional, string, min 2, max 100\n\n\\- \\`address\\`: required, string, min 2, max 255\n\n\\- \\`password\\`: required, string, min 5, max 128"
+                  },
+                  "response": [
+                    {
+                      "name": "account exits from he website",
+                      "originalRequest": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"fullName\": \"Jane Doe\",\n  \"phone\": \"+2348012345678\",\n  \"email\": \"jane@example.com\",\n  \"password\": \"Password123\",\n  //\"category\": \"Retail\",\n  \"address\": \"12 Marina, Lagos\"\n}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{Localhost}}/v2/customers/public",
+                          "host": [
+                            "{{Localhost}}"
+                          ],
+                          "path": [
+                            "v2",
+                            "customers",
+                            "public"
+                          ]
+                        }
+                      },
+                      "status": "Conflict",
+                      "code": 409,
+                      "_postman_previewlanguage": null,
+                      "header": [
+                        {
+                          "key": "X-Powered-By",
+                          "value": "Express"
+                        },
+                        {
+                          "key": "Vary",
+                          "value": "Origin"
+                        },
+                        {
+                          "key": "Access-Control-Allow-Credentials",
+                          "value": "true"
+                        },
+                        {
+                          "key": "RateLimit-Policy",
+                          "value": "5;w=900"
+                        },
+                        {
+                          "key": "RateLimit-Limit",
+                          "value": "5"
+                        },
+                        {
+                          "key": "RateLimit-Remaining",
+                          "value": "4"
+                        },
+                        {
+                          "key": "RateLimit-Reset",
+                          "value": "900"
+                        },
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json; charset=utf-8"
+                        },
+                        {
+                          "key": "Content-Length",
+                          "value": "186"
+                        },
+                        {
+                          "key": "ETag",
+                          "value": "W/\"ba-8OavX5Z/8rzRi+zY8b/PKw+gBR8\""
+                        },
+                        {
+                          "key": "Date",
+                          "value": "Tue, 26 May 2026 12:05:54 GMT"
+                        },
+                        {
+                          "key": "Connection",
+                          "value": "keep-alive"
+                        },
+                        {
+                          "key": "Keep-Alive",
+                          "value": "timeout=5"
+                        }
+                      ],
+                      "cookie": [],
+                      "body": "{\n    \"success\": false,\n    \"response_message\": \"An account with this email already exists.\",\n    \"error\": {\n        \"name\": \"ConflictError\",\n        \"message\": \"An account with this email already exists.\",\n        \"statusCode\": 409\n    }\n}"
+                    },
+                    {
+                      "name": "use contry code",
+                      "originalRequest": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"fullName\": \"Jane Doe\",\n  \"phone\": \"08012345677\",\n  \"email\": \"baby@example.com\",\n  \"password\": \"Password123\",\n  //\"category\": \"Retail\",\n  \"address\": \"12 Marina, Lagos\"\n}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{Localhost}}/v2/customers/public",
+                          "host": [
+                            "{{Localhost}}"
+                          ],
+                          "path": [
+                            "v2",
+                            "customers",
+                            "public"
+                          ]
+                        }
+                      },
+                      "status": "Bad Request",
+                      "code": 400,
+                      "_postman_previewlanguage": null,
+                      "header": [
+                        {
+                          "key": "X-Powered-By",
+                          "value": "Express"
+                        },
+                        {
+                          "key": "Vary",
+                          "value": "Origin"
+                        },
+                        {
+                          "key": "Access-Control-Allow-Credentials",
+                          "value": "true"
+                        },
+                        {
+                          "key": "RateLimit-Policy",
+                          "value": "5;w=900"
+                        },
+                        {
+                          "key": "RateLimit-Limit",
+                          "value": "5"
+                        },
+                        {
+                          "key": "RateLimit-Remaining",
+                          "value": "4"
+                        },
+                        {
+                          "key": "RateLimit-Reset",
+                          "value": "900"
+                        },
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json; charset=utf-8"
+                        },
+                        {
+                          "key": "Content-Length",
+                          "value": "127"
+                        },
+                        {
+                          "key": "ETag",
+                          "value": "W/\"7f-vSBvBMlr8WvXCW0sxbndH4nKSho\""
+                        },
+                        {
+                          "key": "Date",
+                          "value": "Tue, 26 May 2026 12:15:16 GMT"
+                        },
+                        {
+                          "key": "Connection",
+                          "value": "keep-alive"
+                        },
+                        {
+                          "key": "Keep-Alive",
+                          "value": "timeout=5"
+                        }
+                      ],
+                      "cookie": [],
+                      "body": "{\n    \"success\": false,\n    \"message\": \"Validation error\",\n    \"errors\": [\n        \"Phone number must include country code format, e.g. +2348012345678.\"\n    ]\n}"
+                    },
+                    {
+                      "name": "phone number exists",
+                      "originalRequest": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"fullName\": \"Jane Doe\",\n  \"phone\": \"+2348012345678\",\n  \"email\": \"baby@example.com\",\n  \"password\": \"Password123\",\n  //\"category\": \"Retail\",\n  \"address\": \"12 Marina, Lagos\"\n}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{Localhost}}/v2/customers/public",
+                          "host": [
+                            "{{Localhost}}"
+                          ],
+                          "path": [
+                            "v2",
+                            "customers",
+                            "public"
+                          ]
+                        }
+                      },
+                      "status": "Conflict",
+                      "code": 409,
+                      "_postman_previewlanguage": null,
+                      "header": [
+                        {
+                          "key": "X-Powered-By",
+                          "value": "Express"
+                        },
+                        {
+                          "key": "Vary",
+                          "value": "Origin"
+                        },
+                        {
+                          "key": "Access-Control-Allow-Credentials",
+                          "value": "true"
+                        },
+                        {
+                          "key": "RateLimit-Policy",
+                          "value": "5;w=900"
+                        },
+                        {
+                          "key": "RateLimit-Limit",
+                          "value": "5"
+                        },
+                        {
+                          "key": "RateLimit-Remaining",
+                          "value": "3"
+                        },
+                        {
+                          "key": "RateLimit-Reset",
+                          "value": "864"
+                        },
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json; charset=utf-8"
+                        },
+                        {
+                          "key": "Content-Length",
+                          "value": "158"
+                        },
+                        {
+                          "key": "ETag",
+                          "value": "W/\"9e-EDez2/vzOObgbMP0mkYpEfVu6do\""
+                        },
+                        {
+                          "key": "Date",
+                          "value": "Tue, 26 May 2026 12:15:53 GMT"
+                        },
+                        {
+                          "key": "Connection",
+                          "value": "keep-alive"
+                        },
+                        {
+                          "key": "Keep-Alive",
+                          "value": "timeout=5"
+                        }
+                      ],
+                      "cookie": [],
+                      "body": "{\n    \"success\": false,\n    \"response_message\": \"Phone number already exists.\",\n    \"error\": {\n        \"name\": \"ConflictError\",\n        \"message\": \"Phone number already exists.\",\n        \"statusCode\": 409\n    }\n}"
+                    },
+                    {
+                      "name": "200 okay",
+                      "originalRequest": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"fullName\": \"Jane Doe\",\n  \"phone\": \"+2348012345674\",\n  \"email\": \"baby@example.com\",\n  \"password\": \"Password123\",\n  //\"category\": \"Retail\",\n  \"address\": \"12 Marina, Lagos\"\n}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{Localhost}}/v2/customers/public",
+                          "host": [
+                            "{{Localhost}}"
+                          ],
+                          "path": [
+                            "v2",
+                            "customers",
+                            "public"
+                          ]
+                        }
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "_postman_previewlanguage": null,
+                      "header": [
+                        {
+                          "key": "X-Powered-By",
+                          "value": "Express"
+                        },
+                        {
+                          "key": "Vary",
+                          "value": "Origin"
+                        },
+                        {
+                          "key": "Access-Control-Allow-Credentials",
+                          "value": "true"
+                        },
+                        {
+                          "key": "RateLimit-Policy",
+                          "value": "5;w=900"
+                        },
+                        {
+                          "key": "RateLimit-Limit",
+                          "value": "5"
+                        },
+                        {
+                          "key": "RateLimit-Remaining",
+                          "value": "0"
+                        },
+                        {
+                          "key": "RateLimit-Reset",
+                          "value": "705"
+                        },
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json; charset=utf-8"
+                        },
+                        {
+                          "key": "Content-Length",
+                          "value": "112"
+                        },
+                        {
+                          "key": "ETag",
+                          "value": "W/\"70-l9mwQIvxbl0niiwxCz3B8EEKJ0I\""
+                        },
+                        {
+                          "key": "Date",
+                          "value": "Tue, 26 May 2026 12:18:35 GMT"
+                        },
+                        {
+                          "key": "Connection",
+                          "value": "keep-alive"
+                        },
+                        {
+                          "key": "Keep-Alive",
+                          "value": "timeout=5"
+                        }
+                      ],
+                      "cookie": [],
+                      "body": "{\n    \"success\": true,\n    \"response_message\": \"Verification code sent successfully. Please verify OTP to complete signup.\"\n}"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "verify otp",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "//529735\n\n{\n  \"email\": \"jane@example.com\",\n  \"otp\": \"123456\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{Localhost}}/v2/customers/public/verify-otp",
+                  "host": [
+                    "{{Localhost}}"
+                  ],
+                  "path": [
+                    "v2",
+                    "customers",
+                    "public",
+                    "verify-otp"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "invalid otp",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "//529735\n\n{\n  \"email\": \"jane@example.com\",\n  \"otp\": \"123456\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{Localhost}}/v2/customers/public/verify-otp",
+                      "host": [
+                        "{{Localhost}}"
+                      ],
+                      "path": [
+                        "v2",
+                        "customers",
+                        "public",
+                        "verify-otp"
+                      ]
+                    }
+                  },
+                  "status": "Bad Request",
+                  "code": 400,
+                  "_postman_previewlanguage": null,
+                  "header": [
+                    {
+                      "key": "X-Powered-By",
+                      "value": "Express"
+                    },
+                    {
+                      "key": "Vary",
+                      "value": "Origin"
+                    },
+                    {
+                      "key": "Access-Control-Allow-Credentials",
+                      "value": "true"
+                    },
+                    {
+                      "key": "RateLimit-Policy",
+                      "value": "15;w=900"
+                    },
+                    {
+                      "key": "RateLimit-Limit",
+                      "value": "15"
+                    },
+                    {
+                      "key": "RateLimit-Remaining",
+                      "value": "14"
+                    },
+                    {
+                      "key": "RateLimit-Reset",
+                      "value": "900"
+                    },
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json; charset=utf-8"
+                    },
+                    {
+                      "key": "Content-Length",
+                      "value": "128"
+                    },
+                    {
+                      "key": "ETag",
+                      "value": "W/\"80-ty4qlnxflJFYLXgKdNfUZPuMN50\""
+                    },
+                    {
+                      "key": "Date",
+                      "value": "Tue, 26 May 2026 11:45:29 GMT"
+                    },
+                    {
+                      "key": "Connection",
+                      "value": "keep-alive"
+                    },
+                    {
+                      "key": "Keep-Alive",
+                      "value": "timeout=5"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": false,\n    \"response_message\": \"Invalid OTP.\",\n    \"error\": {\n        \"name\": \"ValidationError\",\n        \"message\": \"Invalid OTP.\",\n        \"statusCode\": 400\n    }\n}"
+                },
+                {
+                  "name": "already verified",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "//529735\n\n{\n  \"email\": \"jane@example.com\",\n  \"otp\": \"529735\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{Localhost}}/v2/customers/public/verify-otp",
+                      "host": [
+                        "{{Localhost}}"
+                      ],
+                      "path": [
+                        "v2",
+                        "customers",
+                        "public",
+                        "verify-otp"
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": null,
+                  "header": [
+                    {
+                      "key": "X-Powered-By",
+                      "value": "Express"
+                    },
+                    {
+                      "key": "Vary",
+                      "value": "Origin"
+                    },
+                    {
+                      "key": "Access-Control-Allow-Credentials",
+                      "value": "true"
+                    },
+                    {
+                      "key": "RateLimit-Policy",
+                      "value": "15;w=900"
+                    },
+                    {
+                      "key": "RateLimit-Limit",
+                      "value": "15"
+                    },
+                    {
+                      "key": "RateLimit-Remaining",
+                      "value": "12"
+                    },
+                    {
+                      "key": "RateLimit-Reset",
+                      "value": "762"
+                    },
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json; charset=utf-8"
+                    },
+                    {
+                      "key": "Content-Length",
+                      "value": "64"
+                    },
+                    {
+                      "key": "ETag",
+                      "value": "W/\"40-Khl+jXEhuuVZbriWhYXPFsyCOnY\""
+                    },
+                    {
+                      "key": "Date",
+                      "value": "Tue, 26 May 2026 11:47:47 GMT"
+                    },
+                    {
+                      "key": "Connection",
+                      "value": "keep-alive"
+                    },
+                    {
+                      "key": "Keep-Alive",
+                      "value": "timeout=5"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"response_message\": \"Email is already verified.\"\n}"
+                },
+                {
+                  "name": "200 okay",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "//529735\n\n{\n  \"email\": \"baby@example.com\",\n  \"otp\": \"586008\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{Localhost}}/v2/customers/public/verify-otp",
+                      "host": [
+                        "{{Localhost}}"
+                      ],
+                      "path": [
+                        "v2",
+                        "customers",
+                        "public",
+                        "verify-otp"
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": null,
+                  "header": [
+                    {
+                      "key": "X-Powered-By",
+                      "value": "Express"
+                    },
+                    {
+                      "key": "Vary",
+                      "value": "Origin"
+                    },
+                    {
+                      "key": "Access-Control-Allow-Credentials",
+                      "value": "true"
+                    },
+                    {
+                      "key": "RateLimit-Policy",
+                      "value": "15;w=900"
+                    },
+                    {
+                      "key": "RateLimit-Limit",
+                      "value": "15"
+                    },
+                    {
+                      "key": "RateLimit-Remaining",
+                      "value": "11"
+                    },
+                    {
+                      "key": "RateLimit-Reset",
+                      "value": "802"
+                    },
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json; charset=utf-8"
+                    },
+                    {
+                      "key": "Content-Length",
+                      "value": "521"
+                    },
+                    {
+                      "key": "ETag",
+                      "value": "W/\"209-SEGlI1Tmsuj98qJC2nfl46ibCCA\""
+                    },
+                    {
+                      "key": "Date",
+                      "value": "Tue, 26 May 2026 12:18:59 GMT"
+                    },
+                    {
+                      "key": "Connection",
+                      "value": "keep-alive"
+                    },
+                    {
+                      "key": "Keep-Alive",
+                      "value": "timeout=5"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"response_message\": \"Email verified successfully. Signup complete.\",\n    \"data\": {\n        \"id\": \"8252bc9c-5fee-4617-b298-085776b25321\",\n        \"fullName\": \"Jane doe\",\n        \"email\": \"baby@example.com\",\n        \"emailVerified\": true,\n        \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgyNTJiYzljLTVmZWUtNDYxNy1iMjk4LTA4NTc3NmIyNTMyMSIsImVtYWlsIjoiYmFieUBleGFtcGxlLmNvbSIsImZ1bGxOYW1lIjoiSmFuZSBkb2UiLCJ1c2VyVHlwZSI6ImN1c3RvbWVyIiwiaWF0IjoxNzc5Nzk3OTM5LCJleHAiOjE3ODA0MDI3Mzl9.vrcAAECC_ak3z-CLZdERkvbC7_6jYgX0gR4FnAng4-M\",\n        \"expiresIn\": \"7d\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "login",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"baby@example.com\",\n  \"password\": \"your-password\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{Localhost}}/v2/customers/public/login",
+                  "host": [
+                    "{{Localhost}}"
+                  ],
+                  "path": [
+                    "v2",
+                    "customers",
+                    "public",
+                    "login"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "invalid",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"baby@example.com\",\n  \"password\": \"your-password\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{Localhost}}/v2/customers/public/login",
+                      "host": [
+                        "{{Localhost}}"
+                      ],
+                      "path": [
+                        "v2",
+                        "customers",
+                        "public",
+                        "login"
+                      ]
+                    }
+                  },
+                  "status": "Unauthorized",
+                  "code": 401,
+                  "_postman_previewlanguage": null,
+                  "header": [
+                    {
+                      "key": "X-Powered-By",
+                      "value": "Express"
+                    },
+                    {
+                      "key": "Vary",
+                      "value": "Origin"
+                    },
+                    {
+                      "key": "Access-Control-Allow-Credentials",
+                      "value": "true"
+                    },
+                    {
+                      "key": "RateLimit-Policy",
+                      "value": "15;w=900"
+                    },
+                    {
+                      "key": "RateLimit-Limit",
+                      "value": "15"
+                    },
+                    {
+                      "key": "RateLimit-Remaining",
+                      "value": "10"
+                    },
+                    {
+                      "key": "RateLimit-Reset",
+                      "value": "633"
+                    },
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json; charset=utf-8"
+                    },
+                    {
+                      "key": "Content-Length",
+                      "value": "158"
+                    },
+                    {
+                      "key": "ETag",
+                      "value": "W/\"9e-g6zKtPIHyDlP1Ov8EPJIJRYshMs\""
+                    },
+                    {
+                      "key": "Date",
+                      "value": "Tue, 26 May 2026 12:21:48 GMT"
+                    },
+                    {
+                      "key": "Connection",
+                      "value": "keep-alive"
+                    },
+                    {
+                      "key": "Keep-Alive",
+                      "value": "timeout=5"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": false,\n    \"response_message\": \"Invalid email or password.\",\n    \"error\": {\n        \"name\": \"UnauthorizedError\",\n        \"message\": \"Invalid email or password.\",\n        \"statusCode\": 401\n    }\n}"
+                },
+                {
+                  "name": "200 okay",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"baby@example.com\",\n  \"password\": \"Password123\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{Localhost}}/v2/customers/public/login",
+                      "host": [
+                        "{{Localhost}}"
+                      ],
+                      "path": [
+                        "v2",
+                        "customers",
+                        "public",
+                        "login"
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": null,
+                  "header": [
+                    {
+                      "key": "X-Powered-By",
+                      "value": "Express"
+                    },
+                    {
+                      "key": "Vary",
+                      "value": "Origin"
+                    },
+                    {
+                      "key": "Access-Control-Allow-Credentials",
+                      "value": "true"
+                    },
+                    {
+                      "key": "RateLimit-Policy",
+                      "value": "15;w=900"
+                    },
+                    {
+                      "key": "RateLimit-Limit",
+                      "value": "15"
+                    },
+                    {
+                      "key": "RateLimit-Remaining",
+                      "value": "9"
+                    },
+                    {
+                      "key": "RateLimit-Reset",
+                      "value": "555"
+                    },
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json; charset=utf-8"
+                    },
+                    {
+                      "key": "Content-Length",
+                      "value": "493"
+                    },
+                    {
+                      "key": "ETag",
+                      "value": "W/\"1ed-mQ9CPGG9T8Cl7dSCXJWqweNIX1Y\""
+                    },
+                    {
+                      "key": "Date",
+                      "value": "Tue, 26 May 2026 12:23:06 GMT"
+                    },
+                    {
+                      "key": "Connection",
+                      "value": "keep-alive"
+                    },
+                    {
+                      "key": "Keep-Alive",
+                      "value": "timeout=5"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"response_message\": \"Login successful.\",\n    \"data\": {\n        \"id\": \"8252bc9c-5fee-4617-b298-085776b25321\",\n        \"fullName\": \"Jane doe\",\n        \"email\": \"baby@example.com\",\n        \"emailVerified\": true,\n        \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjgyNTJiYzljLTVmZWUtNDYxNy1iMjk4LTA4NTc3NmIyNTMyMSIsImVtYWlsIjoiYmFieUBleGFtcGxlLmNvbSIsImZ1bGxOYW1lIjoiSmFuZSBkb2UiLCJ1c2VyVHlwZSI6ImN1c3RvbWVyIiwiaWF0IjoxNzc5Nzk4MTg2LCJleHAiOjE3ODA0MDI5ODZ9.mgq1RttDjvyf3lIPr1E8H1b0oY34X8tdhCc37aqbQb0\",\n        \"expiresIn\": \"7d\"\n    }\n}"
+                }
+              ]
+            },
+            {
+              "name": "logout",
+              "request": {
+                "method": "GET",
+                "header": []
+              },
+              "response": [
+                {
+                  "name": "no valid token to logout",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"baby@example.com\",\n  \"password\": \"your-password\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{Localhost}}/v2/customers/public/logout",
+                      "host": [
+                        "{{Localhost}}"
+                      ],
+                      "path": [
+                        "v2",
+                        "customers",
+                        "public",
+                        "logout"
+                      ]
+                    }
+                  },
+                  "status": "Unauthorized",
+                  "code": 401,
+                  "_postman_previewlanguage": null,
+                  "header": [
+                    {
+                      "key": "X-Powered-By",
+                      "value": "Express"
+                    },
+                    {
+                      "key": "Vary",
+                      "value": "Origin"
+                    },
+                    {
+                      "key": "Access-Control-Allow-Credentials",
+                      "value": "true"
+                    },
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json; charset=utf-8"
+                    },
+                    {
+                      "key": "Content-Length",
+                      "value": "218"
+                    },
+                    {
+                      "key": "ETag",
+                      "value": "W/\"da-BE4hYqEDROO5vVZE+nUHEGujvu0\""
+                    },
+                    {
+                      "key": "Date",
+                      "value": "Tue, 26 May 2026 12:33:31 GMT"
+                    },
+                    {
+                      "key": "Connection",
+                      "value": "keep-alive"
+                    },
+                    {
+                      "key": "Keep-Alive",
+                      "value": "timeout=5"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": false,\n    \"response_message\": \"Authentication required. Provide a valid customer token.\",\n    \"error\": {\n        \"name\": \"UnauthorizedError\",\n        \"message\": \"Authentication required. Provide a valid customer token.\",\n        \"statusCode\": 401\n    }\n}"
+                },
+                {
+                  "name": "200 okay",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"email\": \"baby@example.com\",\n  \"password\": \"your-password\"\n}"
+                    },
+                    "url": {
+                      "raw": "{{Localhost}}/v2/customers/public/logout",
+                      "host": [
+                        "{{Localhost}}"
+                      ],
+                      "path": [
+                        "v2",
+                        "customers",
+                        "public",
+                        "logout"
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": null,
+                  "header": [
+                    {
+                      "key": "X-Powered-By",
+                      "value": "Express"
+                    },
+                    {
+                      "key": "Vary",
+                      "value": "Origin"
+                    },
+                    {
+                      "key": "Access-Control-Allow-Credentials",
+                      "value": "true"
+                    },
+                    {
+                      "key": "Set-Cookie",
+                      "value": "accessToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax"
+                    },
+                    {
+                      "key": "Set-Cookie",
+                      "value": "customerToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax"
+                    },
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json; charset=utf-8"
+                    },
+                    {
+                      "key": "Content-Length",
+                      "value": "56"
+                    },
+                    {
+                      "key": "ETag",
+                      "value": "W/\"38-C+GtY25kEZltOZdqrRXmkaNDKC4\""
+                    },
+                    {
+                      "key": "Date",
+                      "value": "Tue, 26 May 2026 12:34:43 GMT"
+                    },
+                    {
+                      "key": "Connection",
+                      "value": "keep-alive"
+                    },
+                    {
+                      "key": "Keep-Alive",
+                      "value": "timeout=5"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"response_message\": \"Logout successful.\"\n}"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "New Request",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    }
+  ]
+}
