@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ShieldCheck, Landmark, ArrowLeft, Info } from 'lucide-react';
-import { PRODUCTS } from '../constants';
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
+import usePublicProducts from '../hooks/usePublicProducts';
+import type { Product } from '../types';
 
 export default function Checkout() {
+  const { products } = usePublicProducts();
   const [formData, setFormData] = useState({
     firstName: 'CHUKWUDI',
     lastName: 'OKAFOR',
@@ -14,12 +16,17 @@ export default function Checkout() {
     email: 'amaechinaikechukwu6@gmail.com'
   });
 
-  const cartItems = [
-    { ...PRODUCTS.find(p => p.id === '7'), qty: 2 },
-    { ...PRODUCTS.find(p => p.id === '8'), qty: 1 }
-  ];
+  const cartItems = useMemo(() => {
+    const firstItem = products[0];
+    const secondItem = products[1];
+    const items: Array<(Product & { qty: number }) | null> = [
+      firstItem ? { ...firstItem, qty: 2 } : null,
+      secondItem ? { ...secondItem, qty: 1 } : null,
+    ];
+    return items.filter((item): item is Product & { qty: number } => Boolean(item));
+  }, [products]);
 
-  const subtotal = 42700;
+  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.qty, 0);
   const delivery = 3500;
   const fee = 850;
   const total = subtotal + delivery + fee;
@@ -171,16 +178,16 @@ export default function Checkout() {
               
               <div className="space-y-8 mb-10">
                 {cartItems.map((item, idx) => (
-                  <div key={item?.id || idx} className="flex gap-6 items-start">
+                  <div key={item.id || idx} className="flex gap-6 items-start">
                     <div className="w-20 h-20 bg-white/10 rounded-sm overflow-hidden flex-shrink-0 border border-white/10">
-                      <img src={item?.image} alt={item?.name} className="w-full h-full object-cover" />
+                      <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-sm font-black uppercase tracking-tight leading-tight mb-1">{item?.name}</h3>
-                      <p className="text-[10px] font-bold opacity-60 uppercase tracking-widest">{item?.category}</p>
+                      <h3 className="text-sm font-black uppercase tracking-tight leading-tight mb-1">{item.name}</h3>
+                      <p className="text-[10px] font-bold opacity-60 uppercase tracking-widest">{item.category}</p>
                       <div className="flex justify-between items-center mt-4">
-                        <span className="text-[10px] font-black uppercase tracking-widest px-2 py-1 bg-white/10 rounded-sm">Qty: {item?.qty}</span>
-                        <span className="text-lg font-black">₦{((item?.price || 0) * (item?.qty || 1)).toLocaleString()}</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest px-2 py-1 bg-white/10 rounded-sm">Qty: {item.qty}</span>
+                        <span className="text-lg font-black">₦{(item.price * item.qty).toLocaleString()}</span>
                       </div>
                     </div>
                   </div>

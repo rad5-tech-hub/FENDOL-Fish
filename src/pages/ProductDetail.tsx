@@ -1,13 +1,36 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Navigate, Link } from 'react-router-dom';
-import { PRODUCTS } from '../constants';
 import { Truck, Utensils, Globe, Clock3 } from 'lucide-react';
 import { motion } from 'motion/react';
+import usePublicProducts from '../hooks/usePublicProducts';
 
 export default function ProductDetail() {
   const { id } = useParams();
-  const product = PRODUCTS.find(p => p.id === id);
-  const [selectedWeight, setSelectedWeight] = useState(product?.weightOptions?.[0] || '1KG');
+  const { products, loading, error } = usePublicProducts();
+  const product = products.find(p => p.id === id);
+  const [selectedWeight, setSelectedWeight] = useState('1KG');
+
+  useEffect(() => {
+    if (product?.weightOptions?.[0]) {
+      setSelectedWeight(product.weightOptions[0]);
+    }
+  }, [product]);
+
+  if (loading) {
+    return (
+      <main className="max-w-[1440px] mx-auto px-6 md:px-16 py-24">
+        <p className="text-on-surface-variant font-medium">Loading product...</p>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="max-w-[1440px] mx-auto px-6 md:px-16 py-24">
+        <p className="text-on-surface-variant font-medium">{error}</p>
+      </main>
+    );
+  }
 
   if (!product) return <Navigate to="/market" />;
 

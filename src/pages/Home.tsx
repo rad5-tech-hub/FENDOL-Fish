@@ -1,19 +1,50 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, Fish, Zap, Factory, Truck, Wallet, Handshake, CheckCircle2, MapPin, Phone, MessageCircle, Sprout, Droplets, Scissors, Flame, Package, Send } from 'lucide-react';
-import { PRODUCTS } from '../constants';
 import { Link } from 'react-router-dom';
+import usePublicProducts from '../hooks/usePublicProducts';
 
 export default function Home() {
-  const featuredSelection = PRODUCTS.slice(0, 3);
+  const { products, loading, error } = usePublicProducts();
+  const featuredSelection = products.slice(0, 3);
 
   const processSteps = [
-    { icon: Sprout, title: 'Fish Farming', desc: 'Healthy fish are raised in controlled ponds.' },
-    { icon: Droplets, title: 'Cleaning & Processing', desc: 'Hygienic preparation and treatment.' },
-    { icon: Scissors, title: 'Harvesting', desc: 'Fish are selected and sorted carefully.' },
-    { icon: Flame, title: 'Drying / Smoking', desc: 'Traditional and modern preservation methods.' },
-    { icon: Package, title: 'Packaging', desc: 'Sealed and quality-checked.' },
-    { icon: Send, title: 'Delivery', desc: 'Shipped to homes, restaurants, and distributors.' },
+    {
+      icon: Sprout,
+      title: 'Fish Farming',
+      desc: 'Healthy fish are raised in controlled ponds.',
+      image: '/assets/process/Live%20pond.JPG',
+    },
+    {
+      icon: Droplets,
+      title: 'Cleaning & Processing',
+      desc: 'Hygienic preparation and treatment.',
+      image: '/assets/process/butcher%20preparing%20fresh%20catfish%20segments.png',
+    },
+    {
+      icon: Scissors,
+      title: 'Harvesting',
+      desc: 'Fish are selected and sorted carefully.',
+      image: '/assets/process/Smoked%20fish%20presentation%20in%20smoky%20setting%20%281%29.png',
+    },
+    {
+      icon: Flame,
+      title: 'Drying / Smoking',
+      desc: 'Traditional and modern preservation methods.',
+      image: '/assets/process/Smoked%20fishes%20in%20the%20oven%201.png',
+    },
+    {
+      icon: Package,
+      title: 'Packaging',
+      desc: 'Sealed and quality-checked.',
+      image: '/assets/process/Parcel%20handoff%20with%20Fendol%20Fish%20box%203.png',
+    },
+    {
+      icon: Send,
+      title: 'Delivery',
+      desc: 'Shipped to homes, restaurants, and distributors.',
+      image: '/assets/process/Smiling%20man%20with%20Fendol%20Fish%20packaging.png',
+    },
   ];
 
   const whyChoose = [
@@ -41,13 +72,13 @@ export default function Home() {
         <div className="absolute inset-0 z-0">
           <img
             className="w-full h-full object-cover"
-            src="https://images.unsplash.com/photo-1534120247760-c44c3e4a62f1?q=80&w=2000&auto=format&fit=crop"
+            src="/assets/landingimages/Smoked fishes in the oven 2.png"
             alt="Fendol Fish Premium Supply"
           />
           <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
           <div className="absolute inset-0 smoke-overlay opacity-30"></div>
         </div>
-        <div className="relative z-10 px-6 md:px-16 max-w-[1440px] mx-auto w-full pt-20 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="relative z-10 px-6 md:px-16 max-w-[1440px] mx-auto w-full pt-20 grid grid-cols-1 items-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -72,25 +103,6 @@ export default function Home() {
 
           </motion.div>
 
-          {/* Right visual block */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="hidden lg:grid grid-cols-2 gap-4"
-          >
-            <div className="aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl">
-              <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=800&auto=format&fit=crop" alt="Smoked fish closeup" className="w-full h-full object-cover" />
-            </div>
-            <div className="space-y-4 pt-12">
-              <div className="aspect-square rounded-2xl overflow-hidden shadow-2xl">
-                <img src="https://images.unsplash.com/photo-1473093226795-af9932fe5856?q=80&w=800&auto=format&fit=crop" alt="Processing" className="w-full h-full object-cover" />
-              </div>
-              <div className="aspect-square rounded-2xl overflow-hidden shadow-2xl">
-                <img src="https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?q=80&w=800&auto=format&fit=crop" alt="Packaged fish" className="w-full h-full object-cover" />
-              </div>
-            </div>
-          </motion.div>
         </div>
       </section>
 
@@ -117,7 +129,7 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
             <img
-              src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=1200&auto=format&fit=crop"
+              src="/assets/landingimages/Smoked fish presentation in smoky setting.png"
               alt="The Fendol team"
               className="w-full h-full object-cover"
             />
@@ -146,7 +158,22 @@ export default function Home() {
           </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-          {featuredSelection.map((product, idx) => (
+          {loading && (
+            <div className="col-span-full text-on-surface-variant font-medium">
+              Loading products...
+            </div>
+          )}
+          {!loading && error && (
+            <div className="col-span-full text-on-surface-variant font-medium">
+              {error}
+            </div>
+          )}
+          {!loading && !error && featuredSelection.length === 0 && (
+            <div className="col-span-full text-on-surface-variant font-medium">
+              No products available right now.
+            </div>
+          )}
+          {!loading && !error && featuredSelection.map((product, idx) => (
             <motion.div
               key={product.id}
               initial={{ opacity: 0, y: 20 }}
@@ -185,8 +212,7 @@ export default function Home() {
         </div>
 
         <div className="relative">
-          <div className="hidden lg:block absolute top-10 left-0 right-0 h-0.5 bg-primary/10"></div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             {processSteps.map((step, idx) => (
               <motion.div
                 key={step.title}
@@ -194,14 +220,18 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.08 }}
                 viewport={{ once: true }}
-                className="relative text-center"
+                className="relative text-center border border-primary/10 bg-surface bg-cover bg-center overflow-hidden"
+                style={{ backgroundImage: `url(${step.image})` }}
               >
-                <div className="relative z-10 w-20 h-20 mx-auto mb-4 bg-primary text-on-primary rounded-full flex items-center justify-center shadow-lg">
+                <div className="absolute inset-0 bg-black/70 dark:bg-black/90"></div>
+                <div className="relative z-10 p-6 bg-cover bg-center">
+                  <div className="w-20 h-20 mx-auto mb-4 bg-secondary text-on-secondary rounded-full flex items-center justify-center shadow-lg">
                   <step.icon size={28} />
                 </div>
                 <span className="font-mono text-[10px] text-secondary font-black tracking-widest block mb-1">STEP {String(idx + 1).padStart(2, '0')}</span>
-                <h3 className="text-sm font-black text-primary uppercase tracking-tight mb-2">{step.title}</h3>
-                <p className="text-xs text-on-surface-variant font-medium leading-relaxed">{step.desc}</p>
+                <h3 className="text-sm font-black text-on-primary uppercase tracking-tight mb-2">{step.title}</h3>
+                <p className="text-xs text-on-primary/80 font-medium leading-relaxed">{step.desc}</p>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -271,8 +301,18 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 8. TESTIMONIALS */}
-      <section className="py-24 px-6 md:px-16 bg-surface-container/20">
+      {/* 8. FULLSCREEN FEATURE IMAGE */}
+      <section className="w-full h-screen">
+        <img
+          src="/assets/Smoked%20fish%20presentation%20in%20smoky%20setting%201%20(1).png"
+          alt="Smoked fish presentation in smoky setting"
+          className="w-full h-full object-cover"
+          loading="lazy"
+        />
+      </section>
+
+      {/* 9. TESTIMONIALS */}
+      <section className="pt-24 px-6 md:px-16 bg-surface-container/20">
         <div className="max-w-[1440px] mx-auto">
           <div className="mb-16 text-center">
             <span className="font-mono text-xs text-secondary block mb-2 uppercase tracking-widest font-black">TRUSTED ACROSS NIGERIA</span>
@@ -293,6 +333,18 @@ export default function Home() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* 9.5 FEATURE IMAGE */}
+      <section className="w-full">
+        <div className="aspect-[16/6] bg-surface-container overflow-hidden">
+          <img
+            src="/assets/Smoked%20fish%20in%20aesthetic%20detailing%201.png"
+            alt="Smoked fish aesthetic detailing"
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
         </div>
       </section>
 

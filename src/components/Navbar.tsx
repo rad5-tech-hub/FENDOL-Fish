@@ -59,7 +59,6 @@ export default function Navbar() {
     { name: 'About Us', path: '/about' },
     { name: 'Distributors', path: '/distributors' },
     { name: 'Careers', path: '/careers' },
-    { name: 'Track Order', path: '/track' },
     { name: 'Recipes', path: '/recipes' },
     { name: 'Gallery', path: '/gallery' },
     { name: 'Contact', path: '/contact' },
@@ -121,7 +120,6 @@ export default function Navbar() {
               {
                 label: 'Customer',
                 items: [
-                  { name: 'Track Order', path: '/track' },
                   { name: 'Distributors', path: '/distributors' },
                   { name: 'Contact', path: '/contact' },
                 ]
@@ -290,7 +288,6 @@ export default function Navbar() {
                     ...(isAuthenticated ? [{ name: 'My Dashboard', path: '/dashboard' as string }] : []),
                   ]},
                   { label: 'Customer', items: [
-                    { name: 'Track Order', path: '/track' },
                     { name: 'Distributors', path: '/distributors' },
                     { name: 'Contact', path: '/contact' },
                   ]},

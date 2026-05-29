@@ -6,10 +6,21 @@ export interface Product {
   category: string;
   tag: string;
   image: string;
+  unit?: string;
+  quantityAvailable?: number;
   details?: string;
   origin?: string;
   shelfLife?: string;
   weightOptions?: string[];
+}
+
+export interface ApiProduct {
+  id: string;
+  productName: string;
+  unit: string;
+  basePrice: number;
+  imageUrl: string | null;
+  quantityAvailable: number;
 }
 
 export interface CartItem extends Product {

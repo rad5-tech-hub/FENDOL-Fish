@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { PRODUCTS } from '../constants';
 import { Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'motion/react';
+import usePublicProducts from '../hooks/usePublicProducts';
 
 export default function Market() {
   const [searchParams] = useSearchParams();
   const searchBarQuery = searchParams.get('search');
   const [activeCategory, setActiveCategory] = useState('All Products');
-  
-  const categories = [
-    'All Products',
-    'Artisanal Smoked',
-    'Sun-Dried Supply',
-    'Fresh Harvest'
-  ];
+  const { products, categories, loading, error } = usePublicProducts();
 
-  const filteredProducts = PRODUCTS.filter(p => {
+  useEffect(() => {
+    if (!categories.includes(activeCategory)) {
+      setActiveCategory('All Products');
+    }
+  }, [categories, activeCategory]);
+
+  const filteredProducts = products.filter(p => {
     const matchesCategory = activeCategory === 'All Products' || p.category === activeCategory;
     const matchesSearch = !searchBarQuery || 
       p.name.toLowerCase().includes(searchBarQuery.toLowerCase()) || 
@@ -51,7 +51,7 @@ export default function Market() {
                   >
                     {cat} 
                     <span className={`text-[10px] font-bold ${activeCategory === cat ? 'opacity-70' : 'opacity-40'}`}>
-                      {cat === 'All Products' ? PRODUCTS.length : PRODUCTS.filter(p => p.category === cat).length}
+                      {cat === 'All Products' ? products.length : products.filter(p => p.category === cat).length}
                     </span>
                   </button>
                 </li>
@@ -63,7 +63,17 @@ export default function Market() {
         {/* Product Grid */}
         <div className="flex-grow">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProducts.map((product, idx) => (
+            {loading && (
+              <div className="col-span-full text-on-surface-variant font-medium">
+                Loading products...
+              </div>
+            )}
+            {!loading && error && (
+              <div className="col-span-full text-on-surface-variant font-medium">
+                {error}
+              </div>
+            )}
+            {!loading && !error && filteredProducts.map((product, idx) => (
               <motion.div 
                 key={product.id}
                 initial={{ opacity: 0, y: 10 }}
@@ -78,7 +88,7 @@ export default function Market() {
                       src={product.image} 
                       alt={product.name}
                     />
-                    {product.id === '1' && (
+                    {idx === 0 && (
                       <span className="absolute top-4 left-4 bg-secondary text-on-secondary px-3 py-1 font-bold text-[9px] uppercase tracking-widest rounded-sm">Bestseller</span>
                     )}
                   </div>
@@ -99,7 +109,7 @@ export default function Market() {
               </motion.div>
             ))}
           </div>
-          {filteredProducts.length === 0 && (
+          {!loading && !error && filteredProducts.length === 0 && (
             <div className="py-24 text-center">
               <p className="text-on-surface-variant italic">No products found matching your search.</p>
             </div>

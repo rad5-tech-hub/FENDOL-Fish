@@ -39,8 +39,8 @@
   --on-background: #121212;
   --primary: #121212;
   --on-primary: #ffffff;
-  --secondary: #d4a72c;
-  --on-secondary: #000000;
+  --secondary: #D57438;
+  --on-secondary: #ffffff;
   --tertiary: #422f10;
   --on-tertiary: #ffffff;
   
@@ -59,8 +59,8 @@
 .dark {
   --background: #100f0d;
   --on-background: #e1e3e1;
-  --primary: #f4c430;
-  --on-primary: #100f0d;
+  --primary: #D57438;
+  --on-primary: #ffffff;
   --secondary: #ffffff;
   --on-secondary: #100f0d;
   --tertiary: #f4e0c1;
@@ -79,6 +79,10 @@
 }
 
 @layer base {
+  *, *::before, *::after {
+    border-radius: 0 !important;
+  }
+
   body {
     @apply bg-background text-on-surface font-sans;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");

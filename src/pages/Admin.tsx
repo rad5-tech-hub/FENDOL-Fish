@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
-import { PRODUCTS } from '../constants';
+import React, { useEffect, useState } from 'react';
 import { Plus, Edit, Trash2, LayoutDashboard, Settings, ShoppingBag, Users } from 'lucide-react';
 import { motion } from 'motion/react';
+import usePublicProducts from '../hooks/usePublicProducts';
 
 export default function Admin() {
-  const [products, setProducts] = useState(PRODUCTS);
+  const { products: apiProducts, loading, error } = usePublicProducts();
+  const [products, setProducts] = useState(apiProducts);
   const [activeTab, setActiveTab] = useState('inventory');
+
+  useEffect(() => {
+    setProducts(apiProducts);
+  }, [apiProducts]);
 
   return (
     <main className="pt-20 min-h-screen bg-surface-container-low transition-colors">
@@ -91,10 +96,31 @@ export default function Admin() {
                     </tr>
                   </thead>
                   <tbody>
-                    {products.map((p) => (
+                    {loading && (
+                      <tr>
+                        <td colSpan={5} className="p-6 text-on-surface-variant font-medium">
+                          Loading products...
+                        </td>
+                      </tr>
+                    )}
+                    {!loading && error && (
+                      <tr>
+                        <td colSpan={5} className="p-6 text-on-surface-variant font-medium">
+                          {error}
+                        </td>
+                      </tr>
+                    )}
+                    {!loading && !error && products.length === 0 && (
+                      <tr>
+                        <td colSpan={5} className="p-6 text-on-surface-variant font-medium">
+                          No products available.
+                        </td>
+                      </tr>
+                    )}
+                    {!loading && !error && products.map((p) => (
                       <tr key={p.id} className="border-b border-primary/5 hover:bg-surface-container-low transition-colors">
                         <td className="p-6 flex items-center gap-4">
-                          <img src={p.image} className="w-12 h-12 object-cover border border-primary/5" alt="" />
+                          <img src={p.image} className="w-12 h-12 object-cover border border-primary/5" alt={p.name} />
                           <span className="font-bold text-sm uppercase">{p.name}</span>
                         </td>
                         <td className="p-6">
@@ -105,7 +131,7 @@ export default function Admin() {
                         </td>
                         <td className="p-6">
                           <div className="w-24 h-2 bg-surface-container-high rounded-full overflow-hidden">
-                            <div className="w-3/4 h-full bg-secondary"></div>
+                            <div className="h-full bg-secondary" style={{ width: p.quantityAvailable ? `${Math.min(p.quantityAvailable * 10, 100)}%` : '0%' }}></div>
                           </div>
                         </td>
                         <td className="p-6 text-right">
