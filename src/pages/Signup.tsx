@@ -241,13 +241,16 @@ export default function Signup() {
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+              <form onSubmit={handleSubmit} className="flex flex-col gap-5" autoComplete="on">
                 <div>
                   <label className="font-mono text-[10px] uppercase tracking-widest text-on-surface-variant font-black mb-2 block">Full Name</label>
                   <div className="relative">
                     <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/40" />
                     <input
                       type="text"
+                      name="name"
+                      id="name"
+                      autoComplete="name"
                       value={form.fullName}
                       onChange={e => updateField('fullName', e.target.value)}
                       placeholder="Chidera Okonkwo"
@@ -263,6 +266,9 @@ export default function Signup() {
                     <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/40" />
                     <input
                       type="email"
+                      name="email"
+                      id="email"
+                      autoComplete="email"
                       value={form.email}
                       onChange={e => updateField('email', e.target.value)}
                       placeholder="you@example.com"
@@ -278,6 +284,9 @@ export default function Signup() {
                     <Phone size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/40" />
                     <input
                       type="tel"
+                      name="tel"
+                      id="phone"
+                      autoComplete="tel"
                       value={form.phone}
                       onChange={e => updateField('phone', e.target.value)}
                       placeholder="+234 800 000 0000"
@@ -294,6 +303,9 @@ export default function Signup() {
                     <MapPin size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/40" />
                     <input
                       type="text"
+                      name="street-address"
+                      id="address"
+                      autoComplete="street-address"
                       value={form.address}
                       onChange={e => updateField('address', e.target.value)}
                       placeholder="12 Marina, Lagos"
@@ -309,6 +321,9 @@ export default function Signup() {
                     <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/40" />
                     <input
                       type={showPassword ? 'text' : 'password'}
+                      name="password"
+                      id="password"
+                      autoComplete="new-password"
                       value={form.password}
                       onChange={e => updateField('password', e.target.value)}
                       placeholder="Min. 6 characters"
@@ -327,6 +342,9 @@ export default function Signup() {
                     <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/40" />
                     <input
                       type={showPassword ? 'text' : 'password'}
+                      name="confirmPassword"
+                      id="confirmPassword"
+                      autoComplete="new-password"
                       value={form.confirmPassword}
                       onChange={e => updateField('confirmPassword', e.target.value)}
                       placeholder="Repeat your password"

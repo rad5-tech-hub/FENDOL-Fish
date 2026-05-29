@@ -51,13 +51,16 @@ export default function Login() {
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+              <form onSubmit={handleSubmit} className="flex flex-col gap-5" autoComplete="on">
                 <div>
                   <label className="font-mono text-[10px] uppercase tracking-widest text-on-surface-variant font-black mb-2 block">Email Address</label>
                   <div className="relative">
                     <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/40" />
                     <input
                       type="email"
+                      name="email"
+                      id="email"
+                      autoComplete="email"
                       value={form.email}
                       onChange={e => setForm(prev => ({ ...prev, email: e.target.value }))}
                       placeholder="you@example.com"
@@ -72,6 +75,9 @@ export default function Login() {
                     <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/40" />
                     <input
                       type={showPassword ? 'text' : 'password'}
+                      name="password"
+                      id="password"
+                      autoComplete="current-password"
                       value={form.password}
                       onChange={e => setForm(prev => ({ ...prev, password: e.target.value }))}
                       placeholder="Enter your password"
