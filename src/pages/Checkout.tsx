@@ -1,12 +1,13 @@
-import React, { useMemo, useState } from 'react';
-import { ShieldCheck, Landmark, ArrowLeft, Info } from 'lucide-react';
+import React, { useState } from 'react';
+import { ShieldCheck, Landmark, ArrowLeft, Info, ShoppingBag, Minus, Plus, Trash2 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
-import usePublicProducts from '../hooks/usePublicProducts';
-import type { Product } from '../types';
+import { useCart } from '../contexts/CartContext';
+import { useToast } from '../contexts/ToastContext';
 
 export default function Checkout() {
-  const { products } = usePublicProducts();
+  const { items: cartItems, updateQuantity, removeFromCart, itemCount } = useCart();
+  const { notify } = useToast();
   const [formData, setFormData] = useState({
     firstName: 'CHUKWUDI',
     lastName: 'OKAFOR',
@@ -16,20 +17,30 @@ export default function Checkout() {
     email: 'amaechinaikechukwu6@gmail.com'
   });
 
-  const cartItems = useMemo(() => {
-    const firstItem = products[0];
-    const secondItem = products[1];
-    const items: Array<(Product & { qty: number }) | null> = [
-      firstItem ? { ...firstItem, qty: 2 } : null,
-      secondItem ? { ...secondItem, qty: 1 } : null,
-    ];
-    return items.filter((item): item is Product & { qty: number } => Boolean(item));
-  }, [products]);
-
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.qty, 0);
+  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const delivery = 3500;
   const fee = 850;
   const total = subtotal + delivery + fee;
+
+  const handleConfirmOrder = (e: React.FormEvent) => {
+    e.preventDefault();
+    notify('Order placed successfully!', 'success');
+  };
+
+  if (cartItems.length === 0) {
+    return (
+      <main className="pt-28 bg-surface-container/50 min-h-screen transition-colors">
+        <div className="max-w-[1440px] mx-auto px-6 md:px-16 py-24 text-center">
+          <ShoppingBag size={48} className="mx-auto text-on-surface-variant/30 mb-6" />
+          <h1 className="text-2xl font-black text-primary uppercase mb-4">Your Cart is Empty</h1>
+          <p className="text-on-surface-variant mb-8">Add some products to get started.</p>
+          <Link to="/market" className="inline-flex items-center gap-2 bg-secondary text-on-secondary px-8 py-4 text-xs font-black uppercase tracking-widest rounded-sm shadow-md hover:opacity-90">
+            Browse Products
+          </Link>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="pt-28 bg-surface-container/50 min-h-screen transition-colors">
@@ -45,7 +56,7 @@ export default function Checkout() {
             <div className="bg-surface p-8 md:p-10 border-2 border-primary/5 rounded-sm">
               <h1 className="text-4xl font-extrabold mb-10 text-primary tracking-tighter uppercase">Customer Details</h1>
               
-              <form className="space-y-10" onSubmit={(e) => e.preventDefault()}>
+              <form className="space-y-10" onSubmit={handleConfirmOrder}>
                 {/* Contact Information */}
                 <section>
                   <div className="flex items-center gap-3 mb-8">
@@ -177,17 +188,29 @@ export default function Checkout() {
               <h2 className="text-2xl font-black mb-8 border-b border-on-primary/10 pb-6 uppercase tracking-tighter">Inventory Summary</h2>
               
               <div className="space-y-8 mb-10">
-                {cartItems.map((item, idx) => (
-                  <div key={item.id || idx} className="flex gap-6 items-start">
+                {cartItems.map((item) => (
+                  <div key={item.id + (item.selectedWeight || '')} className="flex gap-6 items-start">
                     <div className="w-20 h-20 bg-white/10 rounded-sm overflow-hidden flex-shrink-0 border border-white/10">
                       <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="text-sm font-black uppercase tracking-tight leading-tight mb-1">{item.name}</h3>
+                      {item.selectedWeight && <p className="text-[10px] font-bold opacity-60 uppercase tracking-widest">{item.selectedWeight}</p>}
                       <p className="text-[10px] font-bold opacity-60 uppercase tracking-widest">{item.category}</p>
                       <div className="flex justify-between items-center mt-4">
-                        <span className="text-[10px] font-black uppercase tracking-widest px-2 py-1 bg-white/10 rounded-sm">Qty: {item.qty}</span>
-                        <span className="text-lg font-black">₦{(item.price * item.qty).toLocaleString()}</span>
+                        <div className="flex items-center gap-2">
+                          <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="w-6 h-6 flex items-center justify-center bg-white/10 rounded-sm hover:bg-white/20 transition-colors">
+                            <Minus size={12} />
+                          </button>
+                          <span className="text-sm font-black px-2">{item.quantity}</span>
+                          <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-6 h-6 flex items-center justify-center bg-white/10 rounded-sm hover:bg-white/20 transition-colors">
+                            <Plus size={12} />
+                          </button>
+                          <button onClick={() => removeFromCart(item.id)} className="w-6 h-6 flex items-center justify-center bg-white/10 rounded-sm hover:bg-red-500/30 transition-colors ml-2">
+                            <Trash2 size={12} className="text-red-300" />
+                          </button>
+                        </div>
+                        <span className="text-lg font-black">₦{(item.price * item.quantity).toLocaleString()}</span>
                       </div>
                     </div>
                   </div>

@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { ThemeProvider } from './components/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
+import { CartProvider } from './contexts/CartContext';
+import { ToastProvider } from './contexts/ToastContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -35,7 +37,9 @@ export default function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <Router>
+        <ToastProvider>
+        <CartProvider>
+          <Router>
           <ScrollToTop />
           <div className="min-h-screen bg-background text-on-surface transition-colors selection:bg-secondary selection:text-white">
             <Navbar />
@@ -60,7 +64,9 @@ export default function App() {
             <Footer />
             <WhatsAppButton />
           </div>
-        </Router>
+          </Router>
+        </CartProvider>
+        </ToastProvider>
       </AuthProvider>
     </ThemeProvider>
   );

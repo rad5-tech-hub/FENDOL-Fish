@@ -3,9 +3,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, ChevronRight, AlertCircle } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useAuth } from '../contexts/AuthContext';
+import { useToast } from '../contexts/ToastContext';
 
 export default function Login() {
   const { login, isAuthenticated, isLoading } = useAuth();
+  const { notify } = useToast();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({ email: '', password: '' });
@@ -27,9 +29,12 @@ export default function Login() {
 
     const result = await login(form.email.trim().toLowerCase(), form.password);
     if (result.success) {
+      notify('Signed in successfully', 'success');
       navigate('/dashboard');
     } else {
-      setError(result.error || 'Login failed.');
+      const msg = result.error || 'Login failed.';
+      setError(msg);
+      notify(msg, 'error');
     }
   };
 

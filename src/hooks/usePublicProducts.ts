@@ -34,7 +34,7 @@ export default function usePublicProducts() {
         setLoading(true);
         const items = await fetchPublicProducts();
         if (!isMounted) return;
-        setProducts(items.map(mapProduct));
+        setProducts(items.filter(p => p.quantityAvailable && p.quantityAvailable > 0).map(mapProduct));
         setError(null);
       } catch (err) {
         if (!isMounted) return;

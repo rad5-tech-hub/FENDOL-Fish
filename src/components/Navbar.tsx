@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { ShoppingBag, User, Search, Menu, Sun, Moon, ChevronDown, X, ArrowRight, Truck, Gift, LogOut, LayoutDashboard } from 'lucide-react';
 import { useTheme } from './ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
+import { useCart } from '../contexts/CartContext';
+import { useToast } from '../contexts/ToastContext';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function Navbar() {
   const { darkMode, toggleDarkMode } = useTheme();
   const { customer, user, isAuthenticated, logout } = useAuth();
+  const { itemCount } = useCart();
+  const { notify } = useToast();
   const displayName = customer?.fullName || user?.name || '';
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -49,6 +53,7 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     await logout();
+    notify('Signed out', 'info');
     setIsMenuOpen(false);
     navigate('/');
   };
@@ -150,6 +155,16 @@ export default function Navbar() {
           {/* Right Utilities */}
           <div className="flex items-center justify-end gap-2 md:gap-4">
             <div className="hidden md:flex items-center gap-2">
+              <Link to="/checkout" className="p-2 hover:bg-surface-container rounded-full transition-colors group relative" aria-label="Cart">
+                <ShoppingBag size={18} className={`transition-colors ${
+                  !isScrolled && location.pathname === '/' ? 'text-white group-hover:text-primary' : 'text-on-surface-variant group-hover:text-primary'
+                }`} />
+                {itemCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-secondary text-on-secondary text-[9px] font-black rounded-full flex items-center justify-center">
+                    {itemCount > 9 ? '9+' : itemCount}
+                  </span>
+                )}
+              </Link>
               <button onClick={toggleSearch} className="p-2 hover:bg-surface-container rounded-full transition-colors group" aria-label="Search">
                 <Search size={18} className={`transition-colors ${
                   !isScrolled && location.pathname === '/' ? 'text-white group-hover:text-primary' : 'text-on-surface-variant group-hover:text-primary'
@@ -164,9 +179,11 @@ export default function Navbar() {
                 }
               </button>
             </div>
-            <Link to={location.pathname === '/' ? '/market' : '/login'} className="hidden md:inline-flex items-center px-5 py-2.5 bg-secondary text-on-secondary text-[11px] font-black uppercase tracking-widest rounded-sm hover:opacity-90 transition-opacity shadow-md">
-              {location.pathname === '/' ? 'Order Now' : 'Sign In'}
-            </Link>
+            {(!isAuthenticated || location.pathname === '/') && (
+              <Link to={location.pathname === '/' ? '/market' : '/login'} className="hidden md:inline-flex items-center px-5 py-2.5 bg-secondary text-on-secondary text-[11px] font-black uppercase tracking-widest rounded-sm hover:opacity-90 transition-opacity shadow-md">
+                {location.pathname === '/' ? 'Order Now' : 'Sign In'}
+              </Link>
+            )}
 
             <button onClick={toggleMenu} className="lg:hidden p-2 hover:bg-surface-container rounded-full transition-colors ml-1">
               {isMenuOpen ? <X size={24} className="text-primary" /> : <Menu size={24} className={!isScrolled && location.pathname === '/' ? 'text-white' : 'text-primary'} />}

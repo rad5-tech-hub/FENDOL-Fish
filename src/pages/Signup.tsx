@@ -3,9 +3,11 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff, User, Mail, Phone, Lock, Gift, ChevronRight, CheckCircle, AlertCircle, MapPin, ArrowLeft, KeyRound } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useAuth } from '../contexts/AuthContext';
+import { useToast } from '../contexts/ToastContext';
 
 export default function Signup() {
   const { signup, verifyOtp, isAuthenticated, isLoading, isOtpSent, otpEmail, resetOtpState } = useAuth();
+  const { notify } = useToast();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
@@ -60,7 +62,11 @@ export default function Signup() {
     });
 
     if (!result.success) {
-      setServerError(result.error || 'Signup failed. Please try again.');
+      const msg = result.error || 'Signup failed. Please try again.';
+      setServerError(msg);
+      notify(msg, 'error');
+    } else {
+      notify('Verification code sent to your email', 'success');
     }
   };
 
@@ -74,6 +80,23 @@ export default function Signup() {
     if (value && index < 5) {
       otpRefs.current[index + 1]?.focus();
     }
+  };
+
+  const handleOtpPaste = (e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const pastedText = e.clipboardData.getData('text');
+    const digits = pastedText.replace(/\D/g, '').slice(0, 6);
+    if (digits.length === 0) return;
+
+    const newOtp = [...otp];
+    for (let i = 0; i < 6; i++) {
+      newOtp[i] = digits[i] || '';
+    }
+    setOtp(newOtp);
+    setOtpError('');
+
+    const nextIndex = Math.min(digits.length, 5);
+    otpRefs.current[nextIndex]?.focus();
   };
 
   const handleOtpKeyDown = (index: number, e: React.KeyboardEvent) => {
@@ -93,9 +116,12 @@ export default function Signup() {
 
     const result = await verifyOtp(otpEmail!, code);
     if (result.success) {
+      notify('Account verified successfully', 'success');
       navigate('/dashboard', { replace: true });
     } else {
-      setOtpError(result.error || 'Verification failed.');
+      const msg = result.error || 'Verification failed.';
+      setOtpError(msg);
+      notify(msg, 'error');
       setOtp(['', '', '', '', '', '']);
       otpRefs.current[0]?.focus();
     }
@@ -112,11 +138,14 @@ export default function Signup() {
       address: form.address.trim(),
     });
     if (result.success) {
+      notify('Verification code resent', 'success');
       setResendTimer(60);
       setOtp(['', '', '', '', '', '']);
       otpRefs.current[0]?.focus();
     } else {
-      setServerError(result.error || 'Failed to resend code.');
+      const msg = result.error || 'Failed to resend code.';
+      setServerError(msg);
+      notify(msg, 'error');
     }
   };
 
@@ -177,6 +206,7 @@ export default function Signup() {
                           value={digit}
                           onChange={e => handleOtpChange(i, e.target.value)}
                           onKeyDown={e => handleOtpKeyDown(i, e)}
+                          onPaste={i === 0 ? handleOtpPaste : undefined}
                           className={`w-12 h-14 text-center text-xl font-bold bg-surface-container-low border ${otpError ? 'border-red-400' : 'border-primary/10'} outline-none focus:border-secondary transition-colors`}
                         />
                       ))}
