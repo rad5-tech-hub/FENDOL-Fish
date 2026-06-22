@@ -282,6 +282,48 @@ export async function logoutCustomer(token) {
 - Persist token securely (for example, HttpOnly cookie via backend gateway, or secure storage strategy for your client type).
 - Do not expose raw stack traces to users.
 
+## 5. Order Placement (Draft)
+
+- Method: `POST`
+- Path: `/customers/orders` (Proposed)
+- Purpose: Places an order with selected items and packs. Requires authentication.
+
+Request body:
+
+```json
+{
+  "customerEmail": "jane@example.com",
+  "customerPhone": "+2348012345678",
+  "delivery": {
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "address": "12 Marina, Lagos",
+    "area": "ETI-OSA"
+  },
+  "items": [
+    {
+      "productId": "uuid-for-stockfish",
+      "productName": "Whole Stockfish",
+      "quantity": 1,
+      "unitPrice": 8800,
+      "variant": "HAPPY PACK",
+      "packContents": [
+        { "size": "Small", "quantity": 2 },
+        { "size": "Medium", "quantity": 1 },
+        { "size": "Large", "quantity": 0 }
+      ],
+      "comboDetails": null
+    }
+  ],
+  "pricing": {
+    "subtotal": 8800,
+    "deliveryFee": 3500,
+    "processingFee": 850,
+    "totalAmount": 13150
+  }
+}
+```
+
 ## Route Source
 
 - Route definitions: [src/route/v2/wesiteCustomerRoute.js](../src/route/v2/wesiteCustomerRoute.js)

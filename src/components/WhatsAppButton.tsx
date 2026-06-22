@@ -1,5 +1,7 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { MessageCircle, X, Gift } from 'lucide-react';
 
 const PHONE = '2348052641000';
@@ -8,7 +10,7 @@ const DEFAULT_MSG = "Hello FENDOL, I'd like to place an order.";
 export default function WhatsAppButton() {
   const [open, setOpen] = useState(false);
   const [show, setShow] = useState(false);
-  const navigate = useNavigate();
+  const navigate = useRouter();
 
   useEffect(() => {
     const t = setTimeout(() => setShow(true), 1200);

@@ -1,10 +1,13 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import { ShoppingBag, User, Search, Menu, Sun, Moon, ChevronDown, X, ArrowRight, Truck, Gift, LogOut, LayoutDashboard } from 'lucide-react';
 import { useTheme } from './ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
 import { useToast } from '../contexts/ToastContext';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function Navbar() {
@@ -17,8 +20,11 @@ export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isScrolled, setIsScrolled] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
+  const navigate = useRouter();
+  const pathname = usePathname();
+  const location = { pathname };
+  const isHeroPage = pathname === '/' || pathname === '/referral' || pathname === '/distributors' || pathname === '/careers';
+  const isDarkHeroPage = pathname === '/' || pathname === '/distributors' || pathname === '/careers';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -89,10 +95,10 @@ export default function Navbar() {
         <div className="flex justify-between items-center px-6 md:px-12 w-full max-w-[1440px] mx-auto">
           
           {/* Left Brand */}
-          <Link to="/" className="flex items-center active:scale-95 transition-transform shrink-0">
-            <div className={`flex items-center overflow-hidden h-10 md:h-12 px-2 bg-white rounded-md ${!isScrolled && location.pathname === '/' ? 'bg-white shadow-lg' : 'mix-blend-multiply dark:mix-blend-normal dark:bg-transparent'}`}>
+          <Link href="/" className="flex items-center active:scale-95 transition-transform shrink-0">
+            <div className={`flex items-center overflow-hidden h-10 md:h-12 px-2 bg-white rounded-md ${!isScrolled && isDarkHeroPage ? 'bg-white shadow-lg' : 'mix-blend-multiply dark:mix-blend-normal dark:bg-transparent'}`}>
               <img 
-                src={darkMode || (!isScrolled && location.pathname === '/') ? "/assets/logo.png" : "/assets/logo.png"} 
+                src={darkMode || (!isScrolled && isDarkHeroPage) ? "/assets/logo.png" : "/assets/logo.png"} 
                 alt="Fendol Fish" 
                 className="h-full w-auto object-contain block"
                 onError={(e) => {
@@ -132,15 +138,14 @@ export default function Navbar() {
             ].map(group => (
               <div key={group.label} className="group relative py-2">
                 <button className={`text-sm font-medium tracking-tight transition-colors flex items-center gap-1.5 ${
-                  !isScrolled && location.pathname === '/' ? 'text-white/80 hover:text-white' : 'text-on-surface-variant hover:text-primary'
+                  !isScrolled && isDarkHeroPage ? 'text-white/80 hover:text-white' : 'text-on-surface-variant hover:text-primary'
                 }`}>
                   {group.label} <ChevronDown size={14} className="opacity-40 group-hover:rotate-180 transition-transform duration-300" />
                 </button>
                 <div className="absolute top-full left-0 min-w-48 bg-surface shadow-2xl border border-primary/5 py-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[100] translate-y-2 group-hover:translate-y-0 rounded-lg">
                   {group.items.map((item) => (
-                    <Link 
-                      key={item.name}
-                      to={item.path} 
+                    <Link key={item.name}
+                      href={item.path} 
                       className="flex justify-between items-center px-6 py-3 text-xs font-semibold tracking-tight text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors whitespace-nowrap"
                     >
                       {item.name}
@@ -155,9 +160,9 @@ export default function Navbar() {
           {/* Right Utilities */}
           <div className="flex items-center justify-end gap-2 md:gap-4">
             <div className="hidden md:flex items-center gap-2">
-              <Link to="/checkout" className="p-2 hover:bg-surface-container rounded-full transition-colors group relative" aria-label="Cart">
+              <Link href="/checkout" className="p-2 hover:bg-surface-container rounded-full transition-colors group relative" aria-label="Cart">
                 <ShoppingBag size={18} className={`transition-colors ${
-                  !isScrolled && location.pathname === '/' ? 'text-white group-hover:text-primary' : 'text-on-surface-variant group-hover:text-primary'
+                  !isScrolled && isDarkHeroPage ? 'text-white group-hover:text-primary' : 'text-on-surface-variant group-hover:text-primary'
                 }`} />
                 {itemCount > 0 && (
                   <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-secondary text-on-secondary text-[9px] font-black rounded-full flex items-center justify-center">
@@ -167,26 +172,26 @@ export default function Navbar() {
               </Link>
               <button onClick={toggleSearch} className="p-2 hover:bg-surface-container rounded-full transition-colors group" aria-label="Search">
                 <Search size={18} className={`transition-colors ${
-                  !isScrolled && location.pathname === '/' ? 'text-white group-hover:text-primary' : 'text-on-surface-variant group-hover:text-primary'
+                  !isScrolled && isDarkHeroPage ? 'text-white group-hover:text-primary' : 'text-on-surface-variant group-hover:text-primary'
                 }`} />
               </button>
               <button onClick={toggleDarkMode} className="p-2 hover:bg-surface-container rounded-full transition-colors group" aria-label="Toggle theme">
                 {darkMode 
                   ? <Sun size={18} className="text-primary" /> 
                   : <Moon size={18} className={`transition-colors ${
-                      !isScrolled && location.pathname === '/' ? 'text-white group-hover:text-primary' : 'text-on-surface-variant group-hover:text-primary'
+                      !isScrolled && isDarkHeroPage ? 'text-white group-hover:text-primary' : 'text-on-surface-variant group-hover:text-primary'
                     }`} />
                 }
               </button>
             </div>
             {(!isAuthenticated || location.pathname === '/') && (
-              <Link to={location.pathname === '/' ? '/market' : '/login'} className="hidden md:inline-flex items-center px-5 py-2.5 bg-secondary text-on-secondary text-[11px] font-black uppercase tracking-widest rounded-sm hover:opacity-90 transition-opacity shadow-md">
+              <Link href={location.pathname === '/' ? '/market' : '/login'} className="hidden md:inline-flex items-center px-5 py-2.5 bg-secondary text-on-secondary text-[11px] font-black uppercase tracking-widest rounded-sm hover:opacity-90 transition-opacity shadow-md">
                 {location.pathname === '/' ? 'Order Now' : 'Sign In'}
               </Link>
             )}
 
             <button onClick={toggleMenu} className="lg:hidden p-2 hover:bg-surface-container rounded-full transition-colors ml-1">
-              {isMenuOpen ? <X size={24} className="text-primary" /> : <Menu size={24} className={!isScrolled && location.pathname === '/' ? 'text-white' : 'text-primary'} />}
+              {isMenuOpen ? <X size={24} className="text-primary" /> : <Menu size={24} className={!isScrolled && isDarkHeroPage ? 'text-white' : 'text-primary'} />}
             </button>
           </div>
         </div>
@@ -282,8 +287,7 @@ export default function Navbar() {
               </div>
               
               <div className="flex-1 overflow-y-auto px-8 py-8 flex flex-col">
-                <Link
-                  to="/"
+                <Link href="/"
                   onClick={() => setIsMenuOpen(false)}
                   className="text-2xl font-sans font-bold text-primary hover:text-secondary transition-colors block py-2 mb-6 border-b border-primary/5 pb-4"
                 >
@@ -319,8 +323,7 @@ export default function Navbar() {
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: (gIdx * 0.05) + (idx * 0.03) }}
                         >
-                          <Link
-                            to={link.path}
+                          <Link href={link.path}
                             onClick={() => setIsMenuOpen(false)}
                             className="text-lg font-sans font-bold text-primary hover:text-secondary transition-colors block py-1.5"
                           >
@@ -336,9 +339,8 @@ export default function Navbar() {
                   <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-on-surface-variant/60 block mb-6">Browse by Supply</span>
                   <div className="grid grid-cols-2 gap-3">
                     {categories.slice(0, 4).map((cat) => (
-                      <Link 
-                        key={cat.name} 
-                        to={cat.path} 
+                      <Link key={cat.name} 
+                        href={cat.path} 
                         onClick={() => setIsMenuOpen(false)}
                         className="p-3 bg-surface-container/50 border border-primary/5 rounded font-sans text-[11px] font-bold uppercase tracking-wider text-on-surface-variant hover:border-secondary hover:text-secondary transition-all text-center"
                       >
@@ -357,7 +359,7 @@ export default function Navbar() {
                   </button>
                   {isAuthenticated ? (
                     <div className="flex items-center gap-4">
-                      <Link to="/dashboard" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest opacity-80 hover:opacity-100 transition-opacity">
+                      <Link href="/dashboard" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest opacity-80 hover:opacity-100 transition-opacity">
                         <LayoutDashboard size={18} /> Dashboard
                       </Link>
                       <button onClick={handleLogout} className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest opacity-80 hover:opacity-100 transition-opacity">
@@ -365,7 +367,7 @@ export default function Navbar() {
                       </button>
                     </div>
                   ) : (
-                    <Link to="/login" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest opacity-80 hover:opacity-100 transition-opacity">
+                    <Link href="/login" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest opacity-80 hover:opacity-100 transition-opacity">
                       <User size={18} /> Sign In
                     </Link>
                   )}
@@ -386,7 +388,7 @@ export default function Navbar() {
       </header>
       
       {/* Spacer to prevent content jump */}
-      <div className={`h-24 md:h-32 transition-all ${location.pathname === '/' || location.pathname === '/referral' ? 'hidden' : 'block'}`}></div>
+      <div className={`h-24 md:h-32 transition-all ${isHeroPage ? 'hidden' : 'block'}`}></div>
     </>
   );
 }

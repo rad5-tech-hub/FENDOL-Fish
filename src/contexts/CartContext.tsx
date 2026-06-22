@@ -1,10 +1,12 @@
+"use client";
+
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import type { CartItem, Product } from '../types';
 
 interface CartContextType {
   items: CartItem[];
   itemCount: number;
-  addToCart: (product: Product, selectedWeight?: string) => void;
+  addToCart: (product: Product, selectedWeight?: string, quantity?: number) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -14,6 +16,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>(() => {
+    if (typeof window === 'undefined') return [];
     try {
       const saved = localStorage.getItem('fendol_cart');
       return saved ? JSON.parse(saved) : [];
@@ -26,7 +29,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('fendol_cart', JSON.stringify(items));
   }, [items]);
 
-  const addToCart = useCallback((product: Product, selectedWeight?: string) => {
+  const addToCart = useCallback((product: Product, selectedWeight?: string, quantity = 1) => {
     setItems(prev => {
       const existing = prev.find(
         item => item.id === product.id && item.selectedWeight === selectedWeight
@@ -34,13 +37,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       if (existing) {
         return prev.map(item =>
           item.id === product.id && item.selectedWeight === selectedWeight
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       }
-      return [...prev, { ...product, quantity: 1, selectedWeight }];
+      return [...prev, { ...product, quantity, selectedWeight }];
     });
   }, []);
+
 
   const removeFromCart = useCallback((productId: string) => {
     setItems(prev => prev.filter(item => item.id !== productId));

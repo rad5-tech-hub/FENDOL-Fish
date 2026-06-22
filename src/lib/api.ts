@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const BASE_URL = import.meta.env.VITE_API_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 if (!BASE_URL) {
-  throw new Error('VITE_API_URL environment variable is not set');
+  throw new Error('NEXT_PUBLIC_API_URL environment variable is not set');
 }
 
 const api = axios.create({
@@ -48,6 +48,7 @@ export class ApiError extends Error {
 }
 
 export function getAccessToken(): string | null {
+  if (typeof window === 'undefined') return null;
   try {
     return localStorage.getItem('fendol_access_token');
   } catch {
@@ -56,6 +57,7 @@ export function getAccessToken(): string | null {
 }
 
 export function setAccessToken(token: string | null): void {
+  if (typeof window === 'undefined') return;
   try {
     if (token) {
       localStorage.setItem('fendol_access_token', token);

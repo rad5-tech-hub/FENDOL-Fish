@@ -1,0 +1,306 @@
+{
+  "packs": [
+    {
+      "name": "HAPPY PACK",
+      "price": 2250,
+      "items": [
+        { "size": "Small", "quantity": 2 },
+        { "size": "Medium", "quantity": 1 },
+        { "size": "Large", "quantity": 0 }
+      ]
+    },
+    {
+      "name": "MIRCON PACK",
+      "price": 4500,
+      "items": [
+        { "size": "Small", "quantity": 4 },
+        { "size": "Medium", "quantity": 2 },
+        { "size": "Large", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "HANDY PACK",
+      "price": 9000,
+      "items": [
+        { "size": "Small", "quantity": 8 },
+        { "size": "Medium", "quantity": 4 },
+        { "size": "Large", "quantity": 2 },
+        { "size": "Ex.large", "quantity": 1 }
+      ]
+    },
+    {
+      "name": "MINI PACK",
+      "price": 18000,
+      "items": [
+        { "size": "Small", "quantity": 16 },
+        { "size": "Medium", "quantity": 8 },
+        { "size": "Large", "quantity": 4 },
+        { "size": "Ex.large", "quantity": 2 }
+      ]
+    },
+    {
+      "name": "ECO PACK",
+      "price": 36000,
+      "items": [
+        { "size": "Small", "quantity": 32 },
+        { "size": "Medium", "quantity": 16 },
+        { "size": "Large", "quantity": 8 },
+        { "size": "Ex.large", "quantity": 4 }
+      ]
+    },
+    {
+      "name": "SUPER PACK",
+      "price": 72000,
+      "items": [
+        { "size": "Small", "quantity": 64 },
+        { "size": "Medium", "quantity": 32 },
+        { "size": "Large", "quantity": 16 },
+        { "size": "Ex.large", "quantity": 8 }
+      ]
+    },
+    {
+      "name": "JUMBO PACK",
+      "price": 144000,
+      "items": [
+        { "size": "Small", "quantity": 128 },
+        { "size": "Medium", "quantity": 64 },
+        { "size": "Large", "quantity": 32 },
+        { "size": "Ex.large", "quantity": 16 }
+      ]
+    }
+  ],
+  "combos": [
+    {
+      "name": "Combo 1",
+      "allowedSizes": ["Small", "Medium", "Large"],
+      "description": "Mixture of Small, Medium, Large",
+      "packs": [
+        {
+          "name": "Mini Pack",
+          "weight": 1.4,
+          "totalFish": 9,
+          "items": [
+            { "size": "Small", "quantity": 5 },
+            { "size": "Medium", "quantity": 3 },
+            { "size": "Large", "quantity": 1 }
+          ],
+          "price": 18000
+        },
+        {
+          "name": "Eco Pack",
+          "weight": 2.8,
+          "totalFish": 19,
+          "items": [
+            { "size": "Small", "quantity": 11 },
+            { "size": "Medium", "quantity": 5 },
+            { "size": "Large", "quantity": 3 }
+          ],
+          "price": 36000
+        },
+        {
+          "name": "Super Pack",
+          "weight": 5.5,
+          "totalFish": 38,
+          "items": [
+            { "size": "Small", "quantity": 22 },
+            { "size": "Medium", "quantity": 11 },
+            { "size": "Large", "quantity": 5 }
+          ],
+          "price": 72000
+        },
+        {
+          "name": "Jumbo Pack",
+          "weight": 11.0,
+          "totalFish": 76,
+          "items": [
+            { "size": "Small", "quantity": 44 },
+            { "size": "Medium", "quantity": 21 },
+            { "size": "Large", "quantity": 11 }
+          ],
+          "price": 144000
+        }
+      ]
+    },
+    {
+      "name": "Combo 2",
+      "allowedSizes": ["Small", "Medium"],
+      "description": "Mixture of Small, Medium",
+      "packs": [
+        {
+          "name": "Micron Pack",
+          "weight": 0.35,
+          "totalFish": 3,
+          "items": [
+            { "size": "Small", "quantity": 2 },
+            { "size": "Medium", "quantity": 1 }
+          ],
+          "price": 4500
+        },
+        {
+          "name": "Handy Pack",
+          "weight": 0.7,
+          "totalFish": 6,
+          "items": [
+            { "size": "Small", "quantity": 4 },
+            { "size": "Medium", "quantity": 2 }
+          ],
+          "price": 9000
+        },
+        {
+          "name": "Mini Pack",
+          "weight": 1.4,
+          "totalFish": 12,
+          "items": [
+            { "size": "Small", "quantity": 8 },
+            { "size": "Medium", "quantity": 4 }
+          ],
+          "price": 18000
+        },
+        {
+          "name": "Eco Pack",
+          "weight": 2.8,
+          "totalFish": 24,
+          "items": [
+            { "size": "Small", "quantity": 16 },
+            { "size": "Medium", "quantity": 8 }
+          ],
+          "price": 36000
+        },
+        {
+          "name": "Super Pack",
+          "weight": 5.5,
+          "totalFish": 48,
+          "items": [
+            { "size": "Small", "quantity": 32 },
+            { "size": "Medium", "quantity": 16 }
+          ],
+          "price": 72000
+        },
+        {
+          "name": "Jumbo Pack",
+          "weight": 11.0,
+          "totalFish": 96,
+          "items": [
+            { "size": "Small", "quantity": 64 },
+            { "size": "Medium", "quantity": 32 }
+          ],
+          "price": 144000
+        }
+      ]
+    },
+    {
+      "name": "Combo 3",
+      "allowedSizes": ["Medium", "Large"],
+      "description": "Mixture of Medium, Large",
+      "packs": [
+        {
+          "name": "Handy Pack",
+          "weight": 0.7,
+          "totalFish": 3,
+          "items": [
+            { "size": "Medium", "quantity": 2 },
+            { "size": "Large", "quantity": 1 }
+          ],
+          "price": 9000
+        },
+        {
+          "name": "Mini Pack",
+          "weight": 1.4,
+          "totalFish": 6,
+          "items": [
+            { "size": "Medium", "quantity": 4 },
+            { "size": "Large", "quantity": 2 }
+          ],
+          "price": 18000
+        },
+        {
+          "name": "Eco Pack",
+          "weight": 2.8,
+          "totalFish": 12,
+          "items": [
+            { "size": "Medium", "quantity": 8 },
+            { "size": "Large", "quantity": 4 }
+          ],
+          "price": 36000
+        },
+        {
+          "name": "Super Pack",
+          "weight": 5.5,
+          "totalFish": 24,
+          "items": [
+            { "size": "Medium", "quantity": 16 },
+            { "size": "Large", "quantity": 8 }
+          ],
+          "price": 72000
+        },
+        {
+          "name": "Jumbo Pack",
+          "weight": 11.0,
+          "totalFish": 48,
+          "items": [
+            { "size": "Medium", "quantity": 32 },
+            { "size": "Large", "quantity": 16 }
+          ],
+          "price": 144000
+        }
+      ]
+    },
+    {
+      "name": "Combo 4",
+      "allowedSizes": ["Small", "Large"],
+      "description": "Mixture of Small, Large",
+      "packs": [
+        {
+          "name": "Handy Pack",
+          "weight": 0.7,
+          "totalFish": 5,
+          "items": [
+            { "size": "Small", "quantity": 4 },
+            { "size": "Large", "quantity": 1 }
+          ],
+          "price": 9000
+        },
+        {
+          "name": "Mini Pack",
+          "weight": 1.4,
+          "totalFish": 10,
+          "items": [
+            { "size": "Small", "quantity": 8 },
+            { "size": "Large", "quantity": 2 }
+          ],
+          "price": 18000
+        },
+        {
+          "name": "Eco Pack",
+          "weight": 2.8,
+          "totalFish": 20,
+          "items": [
+            { "size": "Small", "quantity": 16 },
+            { "size": "Large", "quantity": 4 }
+          ],
+          "price": 36000
+        },
+        {
+          "name": "Super Pack",
+          "weight": 5.5,
+          "totalFish": 40,
+          "items": [
+            { "size": "Small", "quantity": 32 },
+            { "size": "Large", "quantity": 8 }
+          ],
+          "price": 72000
+        },
+        {
+          "name": "Jumbo Pack",
+          "weight": 11.0,
+          "totalFish": 80,
+          "items": [
+            { "size": "Small", "quantity": 64 },
+            { "size": "Large", "quantity": 16 }
+          ],
+          "price": 144000
+        }
+      ]
+    }
+  ]
+}

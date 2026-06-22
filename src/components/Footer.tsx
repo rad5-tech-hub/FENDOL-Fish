@@ -1,7 +1,9 @@
+"use client";
+
 import React from 'react';
 import { Mail, Instagram, Facebook } from 'lucide-react';
 import { useTheme } from './ThemeContext';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 
 export default function Footer() {
   const { darkMode } = useTheme();
@@ -29,19 +31,19 @@ export default function Footer() {
         <div>
           <h4 className="text-xs font-black text-primary mb-6 uppercase tracking-widest">Navigation</h4>
           <ul className="flex flex-col gap-3">
-            <li><Link className="text-sm font-medium text-on-surface-variant hover:text-secondary transition-colors" to="/">Home</Link></li>
-            <li><Link className="text-sm font-medium text-on-surface-variant hover:text-secondary transition-colors" to="/market">Products</Link></li>
-            <li><Link className="text-sm font-medium text-on-surface-variant hover:text-secondary transition-colors" to="/about">Our Story</Link></li>
-            <li><Link className="text-sm font-medium text-on-surface-variant hover:text-secondary transition-colors" to="/recipes">Recipes</Link></li>
+            <li><Link className="text-sm font-medium text-on-surface-variant hover:text-secondary transition-colors" href="/">Home</Link></li>
+            <li><Link className="text-sm font-medium text-on-surface-variant hover:text-secondary transition-colors" href="/market">Products</Link></li>
+            <li><Link className="text-sm font-medium text-on-surface-variant hover:text-secondary transition-colors" href="/about">Our Story</Link></li>
+            <li><Link className="text-sm font-medium text-on-surface-variant hover:text-secondary transition-colors" href="/recipes">Recipes</Link></li>
           </ul>
         </div>
         <div>
           <h4 className="text-xs font-black text-primary mb-6 uppercase tracking-widest">Quick Links</h4>
           <ul className="flex flex-col gap-3">
-            <li><Link className="text-sm font-medium text-on-surface-variant hover:text-secondary transition-colors" to="/distributors">Become A Distributor</Link></li>
-            <li><Link className="text-sm font-medium text-on-surface-variant hover:text-secondary transition-colors" to="/careers">Careers</Link></li>
-            <li><Link className="text-sm font-medium text-on-surface-variant hover:text-secondary transition-colors" to="/track">Track Your Order</Link></li>
-            <li><Link className="text-sm font-medium text-on-surface-variant hover:text-secondary transition-colors" to="/contact">Contact Us Today</Link></li>
+            <li><Link className="text-sm font-medium text-on-surface-variant hover:text-secondary transition-colors" href="/distributors">Become A Distributor</Link></li>
+            <li><Link className="text-sm font-medium text-on-surface-variant hover:text-secondary transition-colors" href="/careers">Careers</Link></li>
+            <li><Link className="text-sm font-medium text-on-surface-variant hover:text-secondary transition-colors" href="/track">Track Your Order</Link></li>
+            <li><Link className="text-sm font-medium text-on-surface-variant hover:text-secondary transition-colors" href="/contact">Contact Us Today</Link></li>
           </ul>
         </div>
         <div>

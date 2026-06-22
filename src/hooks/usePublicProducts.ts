@@ -1,24 +1,35 @@
 import { useEffect, useMemo, useState } from 'react';
-import { fetchPublicProducts } from '../api/products';
-import type { ApiProduct, Product } from '../types';
+import type { Product } from '../types';
+import packsData from '../data/packs.json';
 
-const FALLBACK_IMAGE = '/assets/landingimages/Smoked fishes in the oven 2.png';
+const FALLBACK_IMAGE = '/assets/Smoked fish presentation in smoky setting 1 (1).png';
 
-function mapProduct(product: ApiProduct): Product {
-  const unitLabel = product.unit ? product.unit.toUpperCase() : 'UNIT';
-  const availability = product.quantityAvailable > 0 ? 'IN STOCK' : 'OUT OF STOCK';
+function getFallbackProducts(): Product[] {
+  const mappedPacks: Product[] = packsData.packs.map((pack) => ({
+    id: pack.name.toLowerCase().replace(/\s+/g, '-'),
+    name: pack.name,
+    description: `Standard pack configuration: ${pack.items.map(i => `${i.quantity} ${i.size}`).join(', ')}`,
+    price: pack.price,
+    category: 'PACK',
+    tag: 'IN STOCK • PACK',
+    image: FALLBACK_IMAGE,
+    unit: 'Pack',
+    quantityAvailable: 100,
+  }));
 
-  return {
-    id: product.id,
-    name: product.productName,
-    description: `${product.productName} (${product.unit})`,
-    price: product.basePrice,
-    category: unitLabel,
-    tag: `${availability} • ${unitLabel}`,
-    image: product.imageUrl || FALLBACK_IMAGE,
-    unit: product.unit,
-    quantityAvailable: product.quantityAvailable,
-  };
+  const mappedCombos: Product[] = packsData.combos.map((combo) => ({
+    id: combo.name.toLowerCase().replace(/\s+/g, '-'),
+    name: combo.name,
+    description: combo.description,
+    price: combo.packs && combo.packs.length > 0 ? combo.packs[0].price : 18000,
+    category: 'COMBO',
+    tag: 'IN STOCK • COMBO',
+    image: FALLBACK_IMAGE,
+    unit: 'Combo',
+    quantityAvailable: 100,
+  }));
+
+  return [...mappedPacks, ...mappedCombos];
 }
 
 export default function usePublicProducts() {
@@ -27,31 +38,9 @@ export default function usePublicProducts() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let isMounted = true;
-
-    const loadProducts = async () => {
-      try {
-        setLoading(true);
-        const items = await fetchPublicProducts();
-        if (!isMounted) return;
-        setProducts(items.filter(p => p.quantityAvailable && p.quantityAvailable > 0).map(mapProduct));
-        setError(null);
-      } catch (err) {
-        if (!isMounted) return;
-        setError(err instanceof Error ? err.message : 'Failed to load products.');
-        setProducts([]);
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
-    };
-
-    loadProducts();
-
-    return () => {
-      isMounted = false;
-    };
+    setProducts(getFallbackProducts());
+    setLoading(false);
+    setError(null);
   }, []);
 
   const categories = useMemo(() => {
@@ -66,3 +55,6 @@ export default function usePublicProducts() {
     error,
   };
 }
+
+
+

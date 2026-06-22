@@ -1,3 +1,5 @@
+"use client";
+
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import type { Customer, Agent } from '../types';
 import { setAccessToken, getAccessToken, ApiError } from '../lib/api';
@@ -33,6 +35,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [customer, setCustomer] = useState<Customer | null>(() => {
+    if (typeof window === 'undefined') return null;
     try {
       const saved = localStorage.getItem('fendol_customer');
       return saved ? JSON.parse(saved) : null;
@@ -41,6 +44,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   });
   const [user, setUser] = useState<Agent | null>(() => {
+    if (typeof window === 'undefined') return null;
     try {
       const saved = localStorage.getItem('fendol_current_user');
       return saved ? JSON.parse(saved) : null;
