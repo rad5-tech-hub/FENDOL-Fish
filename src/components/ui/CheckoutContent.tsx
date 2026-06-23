@@ -10,7 +10,6 @@ import { useToast } from '@/src/contexts/ToastContext';
 import { useAuth } from '@/src/contexts/AuthContext';
 
 import { initializePayment } from '@/src/api/payment';
-import PaystackPop from '@paystack/inline-js';
 
 export default function Checkout() {
   const { isAuthenticated } = useAuth();
@@ -72,6 +71,8 @@ export default function Checkout() {
       
       if (accessCode) {
         setProcessingText('Awaiting Payment...');
+        // Dynamically import Paystack to avoid SSR window is not defined errors
+        const PaystackPop = (await import('@paystack/inline-js')).default;
         const paystack = new PaystackPop();
         paystack.resumeTransaction(accessCode, {
           onSuccess: (transaction: any) => {
