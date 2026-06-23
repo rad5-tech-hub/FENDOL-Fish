@@ -112,7 +112,7 @@ export default function ProductDetail() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="aspect-square bg-surface-container overflow-hidden group border border-primary/5 rounded-2xl shadow-sm self-start sticky top-28"
+            className="aspect-square bg-surface-container overflow-hidden group border border-primary/5 rounded-2xl shadow-sm self-start md:sticky md:top-28"
           >
             <img
               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
