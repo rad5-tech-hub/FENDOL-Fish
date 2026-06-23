@@ -99,11 +99,11 @@ function MarketContent() {
                     <span className="text-[10px] text-secondary mb-2 uppercase font-black tracking-widest">{product.category}</span>
                     <h3 className="text-xl font-extrabold mb-2 leading-tight group-hover:text-secondary transition-colors">{product.name}</h3>
                     <p className="text-sm text-on-surface-variant mb-6 flex-grow line-clamp-2 leading-relaxed">{product.description}</p>
-                    <div className="flex items-center justify-between mt-auto">
+                    <div className="flex items-center justify-between mt-auto gap-2 flex-wrap">
                       <span className="text-xl text-primary font-black">
                         ₦{product.price.toLocaleString()}
                       </span>
-                      <button className="bg-primary text-on-primary font-bold text-[10px] px-6 py-3 hover:bg-secondary transition-colors active:scale-95 uppercase tracking-widest rounded-md shadow-sm">
+                      <button className="bg-primary text-on-primary font-bold text-[10px] px-4 py-3 hover:bg-secondary transition-colors active:scale-95 uppercase tracking-widest rounded-md shadow-sm flex-shrink-0">
                         View Product
                       </button>
                     </div>

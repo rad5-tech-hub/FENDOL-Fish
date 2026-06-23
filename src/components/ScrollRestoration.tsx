@@ -26,6 +26,15 @@ export default function ScrollRestoration() {
     } else {
       // For any new page entries, scroll immediately to top
       window.scrollTo(0, 0);
+      
+      // Delay scrolling slightly to allow new DOM elements to render (e.g. Suspense boundaries)
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      }, 50);
+      
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      }, 150);
     }
   }, [pathname]);
 
