@@ -7,5 +7,9 @@ export const metadata: Metadata = {
 };
 
 export default function LoginPage() {
-  return <LoginContent />;
+  return (
+    <React.Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <LoginContent />
+    </React.Suspense>
+  );
 }
