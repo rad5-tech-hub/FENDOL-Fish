@@ -50,7 +50,7 @@ export default function Referral() {
               </p>
               <div className="flex flex-wrap gap-4 mt-10">
                 <button
-                  onClick={() => navigate(isAuthenticated ? '/dashboard' : '/signup')}
+                  onClick={() => navigate.push(isAuthenticated ? '/dashboard' : '/signup')}
                   className="inline-flex items-center gap-2 px-8 py-4 bg-secondary text-on-secondary text-xs font-black uppercase tracking-widest hover:opacity-90 transition-all shadow-lg"
                 >
                   {isAuthenticated ? 'Go to Dashboard' : 'Start Earning'} <ChevronRight size={16} />
@@ -173,7 +173,7 @@ export default function Referral() {
               Join hundreds of FENDOL agents already earning from their network. Sign up free — no startup costs, no inventory.
             </p>
             <button
-              onClick={() => navigate(isAuthenticated ? '/dashboard' : '/signup')}
+              onClick={() => navigate.push(isAuthenticated ? '/dashboard' : '/signup')}
               className="inline-flex items-center gap-2 px-10 py-5 bg-secondary text-on-secondary text-xs font-black uppercase tracking-widest hover:opacity-90 transition-all shadow-lg"
             >
               {isAuthenticated ? 'Go to Dashboard' : 'Start Earning'} <ChevronRight size={16} />

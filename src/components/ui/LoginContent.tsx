@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Mail, Lock, Eye, EyeOff, ChevronRight, AlertCircle } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useAuth } from '@/src/contexts/AuthContext';
@@ -16,10 +16,12 @@ export default function Login() {
   const [form, setForm] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get('redirect') || '/dashboard';
 
   useEffect(() => {
-    if (isAuthenticated) navigate.replace('/dashboard');
-  }, [isAuthenticated, navigate]);
+    if (isAuthenticated) navigate.replace(redirectPath);
+  }, [isAuthenticated, navigate, redirectPath]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +35,7 @@ export default function Login() {
     const result = await login(form.email.trim().toLowerCase(), form.password);
     if (result.success) {
       notify('Signed in successfully', 'success');
-      navigate.push('/dashboard');
+      navigate.push(redirectPath);
     } else {
       const msg = result.error || 'Login failed.';
       setError(msg);

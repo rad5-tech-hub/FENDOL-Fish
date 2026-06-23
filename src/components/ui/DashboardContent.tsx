@@ -13,7 +13,7 @@ export default function Dashboard() {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    if (!isAuthenticated) navigate('/login', { replace: true });
+    if (!isAuthenticated) navigate.replace('/login');
   }, [isAuthenticated, navigate]);
 
   const profile = customer || user;
@@ -27,7 +27,7 @@ export default function Dashboard() {
 
   const handleLogout = async () => {
     await logout();
-    navigate('/');
+    navigate.push('/');
   };
 
   const referralLink = getReferralLink();
@@ -132,21 +132,23 @@ export default function Dashboard() {
             </AccountCard>
           </motion.div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            {stats.map((s, i) => (
-              <motion.div
-                key={s.label}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.15 + i * 0.1 }}
-              >
-                <AccountCard title={s.label} icon={s.icon}>
-                  <p className="text-3xl font-display font-black">{s.value}</p>
-                </AccountCard>
-              </motion.div>
-            ))}
-          </div>
+          {/* Stats - Only show for Agents */}
+          {user && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              {stats.map((s, i) => (
+                <motion.div
+                  key={s.label}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.15 + i * 0.1 }}
+                >
+                  <AccountCard title={s.label} icon={s.icon}>
+                    <p className="text-3xl font-display font-black">{s.value}</p>
+                  </AccountCard>
+                </motion.div>
+              ))}
+            </div>
+          )}
 
           {/* Referral Link Card — only for agents */}
           {user && (
@@ -195,7 +197,7 @@ export default function Dashboard() {
 
                 <div className="mt-8 pt-6 border-t border-primary/5">
                   <button
-                    onClick={() => navigate('/referral')}
+                    onClick={() => navigate.push('/referral')}
                     className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-secondary hover:opacity-80 transition-opacity"
                   >
                     Learn more about the program <ChevronRight size={14} />

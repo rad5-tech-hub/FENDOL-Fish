@@ -46,7 +46,7 @@ export default function WhatsAppButton() {
         </div>
       )}
       <button
-        onClick={() => { navigate('/referral'); }}
+        onClick={() => { navigate.push('/referral'); }}
         aria-label="Refer & Earn"
         className="w-14 h-14 bg-secondary text-on-secondary rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center justify-center mb-2"
       >

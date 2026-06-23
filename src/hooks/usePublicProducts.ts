@@ -1,36 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { Product } from '../types';
-import packsData from '../data/packs.json';
-
-const FALLBACK_IMAGE = '/assets/Smoked fish presentation in smoky setting 1 (1).png';
-
-function getFallbackProducts(): Product[] {
-  const mappedPacks: Product[] = packsData.packs.map((pack) => ({
-    id: pack.name.toLowerCase().replace(/\s+/g, '-'),
-    name: pack.name,
-    description: `Standard pack configuration: ${pack.items.map(i => `${i.quantity} ${i.size}`).join(', ')}`,
-    price: pack.price,
-    category: 'PACK',
-    tag: 'IN STOCK • PACK',
-    image: FALLBACK_IMAGE,
-    unit: 'Pack',
-    quantityAvailable: 100,
-  }));
-
-  const mappedCombos: Product[] = packsData.combos.map((combo) => ({
-    id: combo.name.toLowerCase().replace(/\s+/g, '-'),
-    name: combo.name,
-    description: combo.description,
-    price: combo.packs && combo.packs.length > 0 ? combo.packs[0].price : 18000,
-    category: 'COMBO',
-    tag: 'IN STOCK • COMBO',
-    image: FALLBACK_IMAGE,
-    unit: 'Combo',
-    quantityAvailable: 100,
-  }));
-
-  return [...mappedPacks, ...mappedCombos];
-}
+import { fetchPublicProducts } from '../api/products';
 
 export default function usePublicProducts() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -38,9 +8,34 @@ export default function usePublicProducts() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setProducts(getFallbackProducts());
-    setLoading(false);
-    setError(null);
+    async function loadProducts() {
+      try {
+        setLoading(true);
+        const fetchedProducts = await fetchPublicProducts();
+        
+        const mappedProducts = fetchedProducts.map(p => ({
+          ...p,
+          id: p.id,
+          name: p.productName || 'Unnamed Product',
+          description: (p as any).description || 'Premium quality fish',
+          price: p.basePrice || 0,
+          category: (p as any).categoryName || (p as any).category || 'Uncategorized',
+          tag: p.quantityAvailable > 0 ? 'IN STOCK' : 'OUT OF STOCK',
+          image: p.imageUrl || '/assets/landingimages/Smoked fish presentation in smoky setting.png',
+          unit: p.unit || 'Item',
+          quantityAvailable: p.quantityAvailable || 0,
+        })) as Product[];
+        
+        setProducts(mappedProducts);
+        setError(null);
+      } catch (err: any) {
+        setError(err.message || 'Failed to load products');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadProducts();
   }, []);
 
   const categories = useMemo(() => {
@@ -55,6 +50,3 @@ export default function usePublicProducts() {
     error,
   };
 }
-
-
-

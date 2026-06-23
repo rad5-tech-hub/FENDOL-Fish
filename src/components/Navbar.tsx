@@ -25,6 +25,11 @@ export default function Navbar() {
   const location = { pathname };
   const isHeroPage = pathname === '/' || pathname === '/referral' || pathname === '/distributors' || pathname === '/careers';
   const isDarkHeroPage = pathname === '/' || pathname === '/distributors' || pathname === '/careers';
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,7 +56,7 @@ export default function Navbar() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      navigate(`/market?search=${encodeURIComponent(searchQuery.trim())}`);
+      navigate.push(`/market?search=${encodeURIComponent(searchQuery.trim())}`);
       setIsSearchOpen(false);
       setSearchQuery('');
     }
@@ -61,7 +66,7 @@ export default function Navbar() {
     await logout();
     notify('Signed out', 'info');
     setIsMenuOpen(false);
-    navigate('/');
+    navigate.push('/');
   };
 
   const navLinks = [
@@ -184,7 +189,7 @@ export default function Navbar() {
                 }
               </button>
             </div>
-            {(!isAuthenticated || location.pathname === '/') && (
+            {(!mounted || !isAuthenticated || location.pathname === '/') && (
               <Link href={location.pathname === '/' ? '/market' : '/login'} className="hidden md:inline-flex items-center px-5 py-2.5 bg-secondary text-on-secondary text-[11px] font-black uppercase tracking-widest rounded-sm hover:opacity-90 transition-opacity shadow-md">
                 {location.pathname === '/' ? 'Order Now' : 'Sign In'}
               </Link>
@@ -232,7 +237,7 @@ export default function Navbar() {
                         <button 
                           key={cat}
                           onClick={() => {
-                            navigate(`/market?search=${encodeURIComponent(cat)}`);
+                            navigate.push(`/market?search=${encodeURIComponent(cat)}`);
                             setIsSearchOpen(false);
                           }}
                           className="text-left py-2 text-xl font-display text-primary hover:text-secondary transition-colors"
@@ -249,7 +254,7 @@ export default function Navbar() {
                         <button
                           key={term}
                           onClick={() => {
-                            navigate(`/market?search=${encodeURIComponent(term)}`);
+                            navigate.push(`/market?search=${encodeURIComponent(term)}`);
                             setIsSearchOpen(false);
                           }}
                           className="px-6 py-3 border border-primary/10 bg-surface-container/50 text-xs font-bold uppercase tracking-widest text-on-surface-variant hover:border-secondary hover:text-secondary transition-all rounded-sm"
@@ -306,7 +311,7 @@ export default function Navbar() {
                   ]},
                   { label: 'Referral', items: [
                     { name: 'Refer & Earn', path: '/referral' },
-                    ...(isAuthenticated ? [{ name: 'My Dashboard', path: '/dashboard' as string }] : []),
+                    ...(mounted && isAuthenticated ? [{ name: 'My Dashboard', path: '/dashboard' as string }] : []),
                   ]},
                   { label: 'Customer', items: [
                     { name: 'Distributors', path: '/distributors' },
@@ -357,7 +362,7 @@ export default function Navbar() {
                     {darkMode ? <Sun size={18} /> : <Moon size={18} />}
                     <span>{darkMode ? 'Light' : 'Dark'} Mode</span>
                   </button>
-                  {isAuthenticated ? (
+                  {mounted && isAuthenticated ? (
                     <div className="flex items-center gap-4">
                       <Link href="/dashboard" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest opacity-80 hover:opacity-100 transition-opacity">
                         <LayoutDashboard size={18} /> Dashboard

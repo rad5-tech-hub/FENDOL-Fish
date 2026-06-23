@@ -1,14 +1,19 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ShieldCheck, Landmark, ArrowLeft, Info, ShoppingBag, Minus, Plus, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/src/contexts/CartContext';
 import { useToast } from '@/src/contexts/ToastContext';
+import { useAuth } from '@/src/contexts/AuthContext';
+
+import { initializePayment } from '@/src/api/payment';
+import PaystackPop from '@paystack/inline-js';
 
 export default function Checkout() {
+  const { isAuthenticated } = useAuth();
   const { items: cartItems, updateQuantity, removeFromCart, itemCount, clearCart } = useCart();
   const { notify } = useToast();
   const router = useRouter();
@@ -16,51 +21,86 @@ export default function Checkout() {
     firstName: 'CHUKWUDI',
     lastName: 'OKAFOR',
     address: '12A ADMIRALTY WAY, LEKKI PHASE 1',
-    area: 'ETI-OSA',
+    area: 'ABA',
     phone: '+234 800 000 0000',
     email: 'amaechinaikechukwu6@gmail.com'
   });
 
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.replace('/login?redirect=/checkout');
+    }
+  }, [isAuthenticated, router]);
+
   const [showPaystack, setShowPaystack] = useState(false);
   const [payState, setPayState] = useState<'idle' | 'processing' | 'success'>('idle');
   const [processingText, setProcessingText] = useState('Verifying Card Details...');
-  const [cardData, setCardData] = useState({ number: '', expiry: '', cvv: '' });
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const delivery = 3500;
   const fee = 850;
   const total = subtotal + delivery + fee;
 
-  const handleConfirmOrder = (e: React.FormEvent) => {
+  const handleConfirmOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     setShowPaystack(true);
-    setPayState('idle');
-    setCardData({ number: '', expiry: '', cvv: '' });
-  };
-
-  const handlePaystackSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
     setPayState('processing');
-    setProcessingText('Verifying Card Details...');
-    
-    setTimeout(() => {
-      setProcessingText('Authorizing Payment...');
+    setProcessingText('Initializing Secure Checkout...');
+
+    try {
+      const payload = {
+        customerEmail: formData.email,
+        customerPhone: formData.phone,
+        items: cartItems.map(item => ({
+          productId: item.id,
+          productName: item.name,
+          quantity: item.quantity,
+          unitPrice: item.price,
+          variant: item.selectedWeight || 'STANDARD'
+        })),
+        pricing: {
+          subtotal,
+          processingFee: fee,
+          totalAmount: total
+        }
+      };
+
+      const response = await initializePayment(payload);
       
-      setTimeout(() => {
-        setProcessingText('Completing Transaction...');
-        
-        setTimeout(() => {
-          setPayState('success');
-          
-          setTimeout(() => {
+      const accessCode = response?.data?.accessCode || response?.accessCode;
+      const authUrl = response?.data?.authorization_url || response?.data?.authorizationUrl || response?.authorization_url;
+      
+      if (accessCode) {
+        setProcessingText('Awaiting Payment...');
+        const paystack = new PaystackPop();
+        paystack.resumeTransaction(accessCode, {
+          onSuccess: (transaction: any) => {
+            setPayState('success');
+            setTimeout(() => {
+              setShowPaystack(false);
+              clearCart();
+              notify('Order placed and paid successfully via Paystack!', 'success');
+              router.push('/market');
+            }, 1500);
+          },
+          onCancel: () => {
+            notify('Payment was cancelled', 'info');
             setShowPaystack(false);
-            clearCart();
-            notify('Order placed and paid successfully via Paystack!', 'success');
-            router.push('/market');
-          }, 1500);
-        }, 1200);
-      }, 1200);
-    }, 1200);
+            setPayState('idle');
+          }
+        });
+      } else if (authUrl) {
+        setProcessingText('Redirecting to Paystack...');
+        window.location.href = authUrl;
+      } else {
+        notify('Payment initialization failed: No access code or redirect URL', 'error');
+        setShowPaystack(false);
+      }
+    } catch (error: any) {
+      notify(error.message || 'Payment initialization failed', 'error');
+      setShowPaystack(false);
+      setPayState('idle');
+    }
   };
 
   if (cartItems.length === 0) {
@@ -87,7 +127,7 @@ export default function Checkout() {
         </Link>
 
         <div className="flex flex-col lg:grid lg:grid-cols-12 gap-10">
-          <div className="lg:col-span-7 space-y-6">
+          <div className="order-2 lg:order-1 lg:col-span-7 space-y-6">
             <div className="bg-surface p-8 md:p-10 border-2 border-primary/5 rounded-sm">
               <h1 className="text-4xl font-extrabold mb-10 text-primary tracking-tighter uppercase">Customer Details</h1>
               
@@ -155,15 +195,18 @@ export default function Checkout() {
                       />
                     </div>
                     <div className="flex flex-col gap-2">
-                      <label className="text-[10px] font-black text-primary uppercase tracking-widest">Area / LGA (Lagos Region)</label>
+                      <label className="text-[10px] font-black text-primary uppercase tracking-widest">Area / LGA (Abia State)</label>
                       <div className="relative">
-                        <select className="w-full bg-surface-container/50 border-2 border-outline/10 p-4 font-sans text-sm focus:border-secondary outline-none transition-all appearance-none cursor-pointer rounded-sm font-semibold">
-                          <option>ETI-OSA</option>
-                          <option>VICTORIA ISLAND</option>
-                          <option>IKEJA</option>
-                          <option>LAGOS ISLAND</option>
-                          <option>SURULERE</option>
-                          <option>LEKKI</option>
+                        <select 
+                          className="w-full bg-surface-container/50 border-2 border-outline/10 p-4 font-sans text-sm focus:border-secondary outline-none transition-all appearance-none cursor-pointer rounded-sm font-semibold"
+                          value={formData.area}
+                          onChange={(e) => setFormData({...formData, area: e.target.value})}
+                        >
+                          <option value="ABA">ABA</option>
+                          <option value="UMUAHIA">UMUAHIA</option>
+                          <option value="OSISIOMA">OSISIOMA</option>
+                          <option value="OBINGWA">OBINGWA</option>
+                          <option value="AROCHUKWU">AROCHUKWU</option>
                         </select>
                         <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-50">
                           <Info size={14} />
@@ -214,7 +257,7 @@ export default function Checkout() {
             </div>
           </div>
 
-          <div className="lg:col-span-5">
+          <div className="order-1 lg:order-2 lg:col-span-5">
             <div className="bg-primary text-on-primary p-8 md:p-10 rounded-sm sticky top-28 shadow-2xl">
               <h2 className="text-2xl font-black mb-8 border-b border-on-primary/10 pb-6 uppercase tracking-tighter">Inventory Summary</h2>
               
@@ -274,7 +317,7 @@ export default function Checkout() {
                   <div>
                     <h4 className="text-[10px] font-black uppercase tracking-widest mb-1">Logistics Note</h4>
                     <p className="text-[11px] font-semibold leading-relaxed opacity-80">
-                      Your order will be vacuum sealed and dispatched fresh. Estimated arrival: <span className="text-secondary font-black">4-6 hours</span> for Central Lagos.
+                      Your order will be vacuum sealed and dispatched fresh. Estimated arrival: <span className="text-secondary font-black">4-6 hours</span> for Aba & Environs.
                     </p>
                   </div>
                 </div>
@@ -310,65 +353,9 @@ export default function Checkout() {
 
               <div className="p-8 flex-1 flex flex-col justify-center">
                 {payState === 'idle' && (
-                  <form onSubmit={handlePaystackSubmit} className="space-y-6">
-                    <div className="text-center mb-6">
-                      <p className="text-xs text-slate-500 font-semibold uppercase tracking-widest">{formData.email}</p>
-                      <p className="text-3xl font-black text-slate-950 mt-1">₦{total.toLocaleString()}</p>
-                    </div>
-
-                    <div className="space-y-4">
-                      <div className="flex flex-col gap-1">
-                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Card Number</label>
-                        <input 
-                          type="text" 
-                          maxLength={19}
-                          placeholder="4000 1234 5678 9010"
-                          value={cardData.number}
-                          onChange={(e) => setCardData({...cardData, number: e.target.value})}
-                          className="border border-slate-200 p-3 text-sm focus:border-[#3bb75e] outline-none rounded-md w-full font-mono text-slate-900 bg-slate-50"
-                          required
-                        />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="flex flex-col gap-1">
-                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Expiry Date</label>
-                          <input 
-                            type="text" 
-                            placeholder="MM/YY"
-                            maxLength={5}
-                            value={cardData.expiry}
-                            onChange={(e) => setCardData({...cardData, expiry: e.target.value})}
-                            className="border border-slate-200 p-3 text-sm focus:border-[#3bb75e] outline-none rounded-md w-full font-mono text-slate-900 bg-slate-50"
-                            required
-                          />
-                        </div>
-                        <div className="flex flex-col gap-1">
-                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">CVV</label>
-                          <input 
-                            type="password" 
-                            placeholder="123"
-                            maxLength={3}
-                            value={cardData.cvv}
-                            onChange={(e) => setCardData({...cardData, cvv: e.target.value})}
-                            className="border border-slate-200 p-3 text-sm focus:border-[#3bb75e] outline-none rounded-md w-full font-mono text-slate-900 bg-slate-50"
-                            required
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <button 
-                      type="submit"
-                      className="w-full bg-[#3bb75e] hover:bg-[#329e50] text-white py-4 font-bold text-sm tracking-widest rounded-md transition-all shadow-md mt-6 flex items-center justify-center gap-2 uppercase cursor-pointer"
-                    >
-                      Pay ₦{total.toLocaleString()}
-                    </button>
-
-                    <div className="flex justify-center items-center gap-2 mt-4 text-[10px] text-slate-400 font-semibold uppercase tracking-wider">
-                      <ShieldCheck size={14} className="text-[#3bb75e]" />
-                      Secured by Paystack
-                    </div>
-                  </form>
+                  <div className="text-center py-10 flex flex-col items-center justify-center">
+                    <p className="text-sm font-extrabold text-slate-800 uppercase tracking-wider">Starting Payment...</p>
+                  </div>
                 )}
 
                 {payState === 'processing' && (

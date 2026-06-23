@@ -7,6 +7,7 @@ import { Eye, EyeOff, User, Mail, Phone, Lock, Gift, ChevronRight, CheckCircle, 
 import { motion } from 'motion/react';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useToast } from '@/src/contexts/ToastContext';
+import { countries } from '@/src/lib/countries';
 
 function SignupContent() {
   const { signup, verifyOtp, isAuthenticated, isLoading, isOtpSent, otpEmail, resetOtpState } = useAuth();
@@ -15,6 +16,7 @@ function SignupContent() {
   const searchParams = useSearchParams();
 
   const [form, setForm] = useState({ fullName: '', email: '', phone: '', password: '', confirmPassword: '', address: '' });
+  const [countryCode, setCountryCode] = useState('+234');
   const [referralCode, setReferralCode] = useState(searchParams.get('ref') || '');
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -26,7 +28,7 @@ function SignupContent() {
   const [resendTimer, setResendTimer] = useState(0);
 
   useEffect(() => {
-    if (isAuthenticated) navigate('/dashboard', { replace: true });
+    if (isAuthenticated) navigate.replace('/dashboard');
   }, [isAuthenticated, navigate]);
 
   useEffect(() => {
@@ -59,7 +61,7 @@ function SignupContent() {
     const result = await signup({
       fullName: form.fullName.trim(),
       email: form.email.trim().toLowerCase(),
-      phone: form.phone.trim(),
+      phone: `${countryCode}${form.phone.trim().replace(/^0/, '')}`,
       password: form.password,
       address: form.address.trim(),
     });
@@ -120,7 +122,7 @@ function SignupContent() {
     const result = await verifyOtp(otpEmail!, code);
     if (result.success) {
       notify('Account verified successfully', 'success');
-      navigate('/dashboard', { replace: true });
+      navigate.replace('/market');
     } else {
       const msg = result.error || 'Verification failed.';
       setOtpError(msg);
@@ -136,7 +138,7 @@ function SignupContent() {
     const result = await signup({
       fullName: form.fullName.trim(),
       email: form.email.trim().toLowerCase(),
-      phone: form.phone.trim(),
+      phone: `${countryCode}${form.phone.trim().replace(/^0/, '')}`,
       password: form.password,
       address: form.address.trim(),
     });
@@ -313,21 +315,30 @@ function SignupContent() {
 
                 <div>
                   <label className="font-mono text-[10px] uppercase tracking-widest text-on-surface-variant font-black mb-2 block">Phone Number</label>
-                  <div className="relative">
-                    <Phone size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant/40" />
+                  <div className="flex relative">
+                    <select
+                      value={countryCode}
+                      onChange={e => setCountryCode(e.target.value)}
+                      className="bg-surface-container-low border border-r-0 border-primary/10 py-3.5 pl-4 pr-2 text-sm outline-none focus:border-secondary transition-colors rounded-l-sm max-w-[120px]"
+                    >
+                      {countries.map(c => (
+                        <option key={c.code} value={c.dialCode}>
+                          {c.code} ({c.dialCode})
+                        </option>
+                      ))}
+                    </select>
                     <input
                       type="tel"
                       name="tel"
                       id="phone"
                       autoComplete="tel"
                       value={form.phone}
-                      onChange={e => updateField('phone', e.target.value)}
-                      placeholder="+234 800 000 0000"
-                      className={`w-full bg-surface-container-low border ${errors.phone ? 'border-red-400' : 'border-primary/10'} py-3.5 pl-11 pr-4 text-sm outline-none focus:border-secondary transition-colors`}
+                      onChange={e => updateField('phone', e.target.value.replace(/\D/g, ''))}
+                      placeholder="800 000 0000"
+                      className={`w-full bg-surface-container-low border ${errors.phone ? 'border-red-400' : 'border-primary/10'} py-3.5 pl-4 pr-4 text-sm outline-none focus:border-secondary transition-colors rounded-r-sm`}
                     />
                   </div>
                   {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
-                  <p className="text-[10px] text-on-surface-variant/50 mt-1">Include country code, e.g. +2348012345678</p>
                 </div>
 
                 <div>
