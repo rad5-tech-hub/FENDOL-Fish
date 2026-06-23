@@ -28,7 +28,7 @@ function SignupContent() {
   const [resendTimer, setResendTimer] = useState(0);
 
   useEffect(() => {
-    if (isAuthenticated) navigate.replace('/dashboard');
+    if (isAuthenticated) navigate.replace('/market');
   }, [isAuthenticated, navigate]);
 
   useEffect(() => {

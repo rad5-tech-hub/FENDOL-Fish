@@ -164,17 +164,18 @@ export default function Navbar() {
           
           {/* Right Utilities */}
           <div className="flex items-center justify-end gap-2 md:gap-4">
+            <Link href="/checkout" className="p-2 hover:bg-surface-container rounded-full transition-colors group relative" aria-label="Cart">
+              <ShoppingBag size={18} className={`transition-colors ${
+                !isScrolled && isDarkHeroPage ? 'text-white group-hover:text-primary' : 'text-on-surface-variant group-hover:text-primary'
+              }`} />
+              {mounted && itemCount > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-secondary text-on-secondary text-[9px] font-black rounded-full flex items-center justify-center">
+                  {itemCount > 9 ? '9+' : itemCount}
+                </span>
+              )}
+            </Link>
+
             <div className="hidden md:flex items-center gap-2">
-              <Link href="/checkout" className="p-2 hover:bg-surface-container rounded-full transition-colors group relative" aria-label="Cart">
-                <ShoppingBag size={18} className={`transition-colors ${
-                  !isScrolled && isDarkHeroPage ? 'text-white group-hover:text-primary' : 'text-on-surface-variant group-hover:text-primary'
-                }`} />
-                {itemCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-secondary text-on-secondary text-[9px] font-black rounded-full flex items-center justify-center">
-                    {itemCount > 9 ? '9+' : itemCount}
-                  </span>
-                )}
-              </Link>
               <button onClick={toggleSearch} className="p-2 hover:bg-surface-container rounded-full transition-colors group" aria-label="Search">
                 <Search size={18} className={`transition-colors ${
                   !isScrolled && isDarkHeroPage ? 'text-white group-hover:text-primary' : 'text-on-surface-variant group-hover:text-primary'
