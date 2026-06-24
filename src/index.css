@@ -81,9 +81,6 @@
 }
 
 @layer base {
-  *, *::before, *::after {
-    border-radius: 0 !important;
-  }
 
   body {
     @apply bg-background text-on-surface font-sans;
