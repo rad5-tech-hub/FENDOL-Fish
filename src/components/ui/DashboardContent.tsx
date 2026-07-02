@@ -20,7 +20,10 @@ export default function Dashboard() {
 
   if (!profile) return null;
 
-  const displayName = customer?.fullName || user?.name || '';
+  let displayName = customer?.fullName || user?.name || '';
+  if (displayName.toLowerCase() === 'unkwun customer' || displayName.toLowerCase() === 'unknown customer') {
+    displayName = profile.email || displayName;
+  }
   const memberSince = user?.createdAt
     ? new Date(user.createdAt).toLocaleDateString('en-NG', { day: 'numeric', month: 'long', year: 'numeric' })
     : new Date().toLocaleDateString('en-NG', { day: 'numeric', month: 'long', year: 'numeric' });

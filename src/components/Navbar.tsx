@@ -15,7 +15,10 @@ export default function Navbar() {
   const { customer, user, isAuthenticated, logout } = useAuth();
   const { itemCount } = useCart();
   const { notify } = useToast();
-  const displayName = customer?.fullName || user?.name || '';
+  let displayName = customer?.fullName || user?.name || '';
+  if (displayName.toLowerCase() === 'unkwun customer' || displayName.toLowerCase() === 'unknown customer') {
+    displayName = customer?.email || user?.email || displayName;
+  }
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');

@@ -24,6 +24,9 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (axios.isAxiosError(error) && error.response) {
+      if (error.response.status === 401 && typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('auth:unauthorized'));
+      }
       const message =
         error.response.data?.response_message ||
         error.response.data?.message ||

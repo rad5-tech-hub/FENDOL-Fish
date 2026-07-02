@@ -56,6 +56,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [otpEmail, setOtpEmail] = useState<string | null>(null);
 
+  const clearAuthData = useCallback(() => {
+    setAccessToken(null);
+    setCustomer(null);
+    setUser(null);
+    setIsOtpSent(false);
+    setOtpEmail(null);
+    setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('auth:unauthorized', clearAuthData);
+    return () => window.removeEventListener('auth:unauthorized', clearAuthData);
+  }, [clearAuthData]);
+
   useEffect(() => {
     if (customer) {
       localStorage.setItem('fendol_customer', JSON.stringify(customer));
@@ -157,14 +171,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch {
       /* proceed with client-side cleanup */
     } finally {
-      setAccessToken(null);
-      setCustomer(null);
-      setUser(null);
-      setIsOtpSent(false);
-      setOtpEmail(null);
-      setIsLoading(false);
+      clearAuthData();
     }
-  }, []);
+  }, [clearAuthData]);
 
   const getReferralLink = useCallback(() => {
     if (!user) return '';
