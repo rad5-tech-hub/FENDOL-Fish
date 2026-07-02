@@ -17,28 +17,40 @@ export default function Checkout() {
   const { notify } = useToast();
   const router = useRouter();
   const [formData, setFormData] = useState({
-    firstName: 'CHUKWUDI',
-    lastName: 'OKAFOR',
-    address: '12A ADMIRALTY WAY, LEKKI PHASE 1',
+    firstName: '',
+    lastName: '',
+    address: '',
     area: 'ABA',
-    phone: '+234 800 000 0000',
-    email: 'amaechinaikechukwu6@gmail.com'
+    phone: '',
+    email: ''
   });
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      router.replace('/login?redirect=/checkout');
-    }
-  }, [isAuthenticated, router]);
+  if (!isAuthenticated) {
+    return (
+      <main className="pt-28 bg-surface-container/50 min-h-screen transition-colors">
+        <div className="max-w-[1440px] mx-auto px-6 md:px-16 py-24 text-center">
+          <ShieldCheck size={48} className="mx-auto text-on-surface-variant/30 mb-6" />
+          <h1 className="text-2xl font-black text-primary uppercase mb-4">Authentication Required</h1>
+          <p className="text-on-surface-variant mb-8">Please log in or create an account to proceed to checkout.</p>
+          <div className="flex items-center justify-center gap-4">
+            <Link href="/login?redirect=/checkout" className="inline-flex items-center gap-2 bg-secondary text-on-secondary px-8 py-4 text-xs font-black uppercase tracking-widest rounded-sm shadow-md hover:opacity-90">
+              Sign In
+            </Link>
+            <Link href="/signup?redirect=/checkout" className="inline-flex items-center gap-2 bg-surface border-2 border-secondary text-secondary px-8 py-4 text-xs font-black uppercase tracking-widest rounded-sm shadow-md hover:bg-secondary/5">
+              Create Account
+            </Link>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   const [showPaystack, setShowPaystack] = useState(false);
   const [payState, setPayState] = useState<'idle' | 'processing' | 'success'>('idle');
   const [processingText, setProcessingText] = useState('Verifying Card Details...');
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const delivery = 3500;
-  const fee = 850;
-  const total = subtotal + delivery + fee;
+  const total = subtotal;
 
   const handleConfirmOrder = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,7 +71,7 @@ export default function Checkout() {
         })),
         pricing: {
           subtotal,
-          processingFee: fee,
+          processingFee: 0,
           totalAmount: total
         }
       };
@@ -217,32 +229,7 @@ export default function Checkout() {
                   </div>
                 </section>
 
-                <hr className="border-primary/10" />
 
-                <section>
-                  <div className="flex items-center gap-3 mb-8">
-                    <span className="w-8 h-8 font-black bg-secondary text-on-secondary text-sm flex items-center justify-center rounded-sm">03</span>
-                    <h2 className="text-xl font-extrabold uppercase tracking-tight">Payment Selection</h2>
-                  </div>
-                  <div className="grid gap-4">
-                    <label className="flex items-center justify-between p-6 border-2 border-secondary bg-secondary/5 rounded-sm cursor-pointer group transition-all">
-                      <div className="flex items-center gap-4">
-                        <div className="w-5 h-5 rounded-full border-2 border-secondary flex items-center justify-center">
-                          <div className="w-2.5 h-2.5 rounded-full bg-secondary"></div>
-                        </div>
-                        <span className="text-sm font-black uppercase tracking-tight">Secure Online Checkout (Paystack)</span>
-                      </div>
-                      <ShieldCheck className="text-secondary" />
-                    </label>
-                    <label className="flex items-center justify-between p-6 border-2 border-outline/10 bg-surface-container/30 rounded-sm opacity-50 cursor-not-allowed">
-                      <div className="flex items-center gap-4">
-                        <div className="w-5 h-5 rounded-full border-2 border-outline/20"></div>
-                        <span className="text-sm font-bold uppercase tracking-tight opacity-40">Direct Bank Transfer (Manual)</span>
-                      </div>
-                      <Landmark size={20} className="opacity-20" />
-                    </label>
-                  </div>
-                </section>
 
                 <button type="submit" className="w-full bg-primary text-on-primary py-6 rounded-sm font-black text-lg shadow-xl shadow-primary/10 hover:bg-secondary hover:text-on-secondary transition-all flex items-center justify-center gap-3 uppercase tracking-widest active:scale-[0.98]">
                   Confirm Order • ₦{total.toLocaleString()}
@@ -297,14 +284,7 @@ export default function Checkout() {
                   <span className="font-bold uppercase tracking-tight opacity-60">Subtotal</span>
                   <span className="font-black">₦{subtotal.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span className="font-bold uppercase tracking-tight opacity-60">Logistics/Delivery</span>
-                  <span className="font-black">₦{delivery.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="font-bold uppercase tracking-tight opacity-60">Processing Fee</span>
-                  <span className="font-black">₦{fee.toLocaleString()}</span>
-                </div>
+
                 
                 <div className="flex justify-between pt-8 mt-6 border-t-2 border-on-primary">
                   <span className="text-xl font-black uppercase tracking-tighter">Total Payable</span>
